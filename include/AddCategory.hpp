@@ -15,16 +15,16 @@
 class AddCategory {
 public:
     struct Category {
-        uint16_t id { };
+        std::uint32_t id { };
         std::string category_name;
     };
 
     auto add_category(const std::string &category_name) -> void;
-    auto get_category_by_ID(uint16_t category_ID) const -> std::optional<Category>;
+    auto get_category_by_ID(std::uint32_t category_ID) const -> std::optional<Category>;
     auto get_category_by_name(const std::string &category_name) const -> std::optional<Category>;
-    auto getCategory(const std::variant<int, std::string> &identifier) const -> std::optional<Category>;
+    auto get_category(const std::variant<std::uint32_t,std::string> &identifier) const -> std::optional<Category>;
 
 private:
-    uint16_t current_ID = 1;
-    std::unordered_map<int, Category> categories;
+    std::uint32_t _current_ID = 1;
+    std::unordered_map<std::uint32_t, Category> _categories;
 };
