@@ -33,14 +33,9 @@ auto Menu::process_menu(const std::vector<MenuItem> &menu) -> void {
 
             std::optional<MenuItem> selected = find_menu_item(current_menu, choice);
             if (selected) {
-                if (!selected->sub_menu.empty()) {
-                    process_menu_recursive(selected->sub_menu);
-                } else {
-                    handle_menu_option(selected->id, flag);
-                }
-            } else {
-                fmt::print("\n[-] Invalid Input, Try Again\n");
-            }
+                if (!selected->sub_menu.empty()) process_menu_recursive(selected->sub_menu);
+                else handle_menu_option(selected->id, flag);
+            } else fmt::print("\n[-] Invalid Input, Try Again\n");
         };
         process_menu_recursive(menu);
     }
@@ -63,12 +58,9 @@ auto Menu::handle_menu_option(std::size_t option_ID, std::atomic<bool> &flag) ->
 
             std::optional<AddCategory::Category> category_by_name = category.get_category_by_name("WhatsApp");
 
-            if (category_by_name) {
-                fmt::print("\n[+] ID: {}, Name: {}",
-                           category_by_name->id, category_by_name->category_name);
-            } else {
-                fmt::print("\n[-] Category Not Found");
-            }
+            if (category_by_name) fmt::print("\n[+] ID: {}, Name: {}",
+                                             category_by_name->id, category_by_name->category_name);
+            else fmt::print("\n[-] Category Not Found");
             break;
         }
 
