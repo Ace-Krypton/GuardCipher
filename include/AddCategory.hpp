@@ -10,6 +10,7 @@
 #include <variant>
 #include <optional>
 #include <iostream>
+#include <fmt/core.h>
 #include <unordered_map>
 
 class AddCategory {

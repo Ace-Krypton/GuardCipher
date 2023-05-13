@@ -10,6 +10,7 @@ auto AddCategory::add_category(const std::string &category_name) -> void {
     new_category.category_name = category_name;
     new_category.id = _current_ID++;
     _categories[new_category.id] = new_category;
+    fmt::print("[+] Category Name Added Successfully\n");
 }
 
 auto AddCategory::get_category_by_ID(std::uint32_t category_ID) const -> std::optional<Category> {
