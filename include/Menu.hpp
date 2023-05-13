@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <vector>
 #include <functional>
 
@@ -21,5 +22,6 @@ public:
     static auto process_menu(const std::vector<MenuItem> &menu) -> void;
     static auto display_menu(const std::vector<MenuItem> &menu) -> void;
     static auto find_menu_item(const std::vector<MenuItem> &menu,
-                               std::size_t id) -> std::optional<Menu::MenuItem*>;
+                               std::size_t id) -> std::optional<Menu::MenuItem>;
+    static auto handle_menu_option(std::size_t option_ID, std::atomic<bool> &flag) -> void;
 };
