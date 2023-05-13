@@ -11,5 +11,5 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(fmt)
 
-add_executable(GuardCipher src/main.cpp src/AddCategory.cpp include/AddCategory.hpp)
+add_executable(GuardCipher src/main.cpp src/AddCategory.cpp include/AddCategory.hpp src/Menu.cpp include/Menu.hpp)
 target_link_libraries(GuardCipher fmt::fmt)

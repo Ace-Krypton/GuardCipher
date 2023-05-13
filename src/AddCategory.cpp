@@ -28,7 +28,7 @@ auto AddCategory::get_category_by_name(const std::string &category_name) const -
     return std::nullopt;
 }
 
-auto AddCategory::get_category(const std::variant<std::size_t,
+[[maybe_unused]] auto AddCategory::get_category(const std::variant<std::size_t,
                                std::string> &identifier) const -> std::optional<Category> {
     if (std::holds_alternative<std::size_t>(identifier)) {
         std::size_t category_ID = std::get<std::size_t>(identifier);
