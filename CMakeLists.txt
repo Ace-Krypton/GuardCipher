@@ -3,4 +3,4 @@ project(GuardCipher)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(GuardCipher src/main.cpp)
+add_executable(GuardCipher src/main.cpp src/AddCategory.cpp include/AddCategory.hpp)
