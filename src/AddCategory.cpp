@@ -13,7 +13,7 @@ auto AddCategory::add_category(const std::string &category_name) -> void {
     fmt::print("[+] Category Name Added Successfully\n");
 }
 
-auto AddCategory::get_category_by_ID(std::uint32_t category_ID) const -> std::optional<Category> {
+auto AddCategory::get_category_by_ID(std::size_t category_ID) const -> std::optional<Category> {
     auto it = _categories.find(category_ID);
     if (it != _categories.end()) return it->second;
     return std::nullopt;
@@ -28,10 +28,10 @@ auto AddCategory::get_category_by_name(const std::string &category_name) const -
     return std::nullopt;
 }
 
-auto AddCategory::get_category(const std::variant<std::uint32_t,
+auto AddCategory::get_category(const std::variant<std::size_t,
                                std::string> &identifier) const -> std::optional<Category> {
-    if (std::holds_alternative<std::uint32_t>(identifier)) {
-        std::uint32_t category_ID = std::get<std::uint32_t>(identifier);
+    if (std::holds_alternative<std::size_t>(identifier)) {
+        std::size_t category_ID = std::get<std::size_t>(identifier);
         return get_category_by_ID(category_ID);
     } else if (std::holds_alternative<std::string>(identifier)) {
         std::string category_name = std::get<std::string>(identifier);
