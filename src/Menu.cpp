@@ -51,12 +51,13 @@ auto Menu::find_menu_item(const std::vector<MenuItem> &menu, std::size_t id) -> 
 auto Menu::handle_menu_option(std::size_t option_ID, std::atomic<bool> &flag) -> void {
     switch (option_ID) {
         case 1: {
-            AddCategory category;
+            Categories category;
             category.add_category("WhatsApp");
             category.add_category("Instagram");
             category.add_category("Facebook");
 
-            std::optional<AddCategory::Category> category_by_name = category.get_category_by_name("WhatsApp");
+            std::optional<Categories::Category> category_by_name =
+                    category.get_category_by_name("WhatsApp");
 
             if (category_by_name) fmt::print("\n[+] ID: {}, Name: {}",
                                              category_by_name->id, category_by_name->category_name);

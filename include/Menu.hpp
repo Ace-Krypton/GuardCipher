@@ -9,7 +9,7 @@
 #include <vector>
 #include <functional>
 
-#include "AddCategory.hpp"
+#include "Categories.hpp"
 
 class Menu {
 public:

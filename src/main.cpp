@@ -3,7 +3,6 @@
  * See LICENSE file for license details
  */
 
-
 #include "../include/Menu.hpp"
 
 auto main() -> int {
