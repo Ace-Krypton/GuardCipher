@@ -56,8 +56,10 @@ auto Menu::handle_menu_option(std::size_t option_ID, std::atomic<bool> &flag) ->
             category.add_category("Instagram");
             category.add_category("Facebook");
 
+            category.delete_category();
+
             std::optional<Categories::Category> category_by_name =
-                    category.get_category_by_name("WhatsApp");
+                    category.get_category_by_ID(3);
 
             if (category_by_name) fmt::print("\n[+] ID: {}, Name: {}",
                                              category_by_name->id, category_by_name->category_name);
