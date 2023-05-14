@@ -15,8 +15,7 @@ auto Menu::display_menu(const std::vector<MenuItem> &menu) -> void {
     fmt::print("==================================================|\n");
 }
 
-auto Menu::process_menu(const std::vector<MenuItem> &menu) -> void {
-    Categories category;
+auto Menu::process_menu(Categories &category, const std::vector<MenuItem> &menu) -> void {
     std::atomic<bool> flag = true;
     while (flag.load()) {
         std::function<void(const std::vector<MenuItem>&)> process_menu_recursive;
@@ -51,19 +50,9 @@ auto Menu::find_menu_item(const std::vector<MenuItem> &menu, std::size_t id) -> 
 
 auto Menu::handle_menu_option(Categories &category, std::size_t option_ID, std::atomic<bool> &flag) -> void {
     switch (option_ID) {
-        case 1:
-            category.add_category();
-            break;
-
-        case 2:
-            category.delete_category();
-            break;
-
-        case 0:
-            flag.store(false);
-            break;
-
-        default:
-            fmt::print("\n[-] Invalid Input, Try Again\n");
+        case 1: category.add_category(); break;
+        case 2: category.delete_category(); break;
+        case 0: flag.store(false); break;
+        default: fmt::print("\n[-] Invalid Input, Try Again\n");
     }
 }

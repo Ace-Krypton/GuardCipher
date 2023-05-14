@@ -6,6 +6,8 @@
 #include "../include/Menu.hpp"
 
 auto main() -> int {
+    Categories category;
+
     std::vector<Menu::MenuItem> menu {
             {1, "Add a category"},
             {2, "Remove a category"},
@@ -19,7 +21,7 @@ auto main() -> int {
             {0, "Exit"},
     };
 
-    Menu::process_menu(menu);
+    Menu::process_menu(category, menu);
 
     return 0;
 }
