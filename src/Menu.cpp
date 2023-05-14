@@ -16,6 +16,7 @@ auto Menu::display_menu(const std::vector<MenuItem> &menu) -> void {
 }
 
 auto Menu::process_menu(const std::vector<MenuItem> &menu) -> void {
+    Categories category;
     std::atomic<bool> flag = true;
     while (flag.load()) {
         std::function<void(const std::vector<MenuItem>&)> process_menu_recursive;
@@ -34,7 +35,7 @@ auto Menu::process_menu(const std::vector<MenuItem> &menu) -> void {
             std::optional<MenuItem> selected = find_menu_item(current_menu, choice);
             if (selected) {
                 if (!selected->sub_menu.empty()) process_menu_recursive(selected->sub_menu);
-                else handle_menu_option(selected->id, flag);
+                else handle_menu_option(category, selected->id, flag);
             } else fmt::print("\n[-] Invalid Input, Try Again\n");
         };
         process_menu_recursive(menu);
@@ -48,24 +49,15 @@ auto Menu::find_menu_item(const std::vector<MenuItem> &menu, std::size_t id) -> 
     return std::nullopt;
 }
 
-auto Menu::handle_menu_option(std::size_t option_ID, std::atomic<bool> &flag) -> void {
+auto Menu::handle_menu_option(Categories &category, std::size_t option_ID, std::atomic<bool> &flag) -> void {
     switch (option_ID) {
-        case 1: {
-            Categories category;
-            category.add_category("WhatsApp");
-            category.add_category("Instagram");
-            category.add_category("Facebook");
-
-            category.delete_category();
-
-            std::optional<Categories::Category> category_by_name =
-                    category.get_category_by_ID(3);
-
-            if (category_by_name) fmt::print("\n[+] ID: {}, Name: {}",
-                                             category_by_name->id, category_by_name->category_name);
-            else fmt::print("\n[-] Category Not Found");
+        case 1:
+            category.add_category();
             break;
-        }
+
+        case 2:
+            category.delete_category();
+            break;
 
         case 0:
             flag.store(false);

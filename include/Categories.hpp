@@ -20,9 +20,9 @@ public:
         std::string category_name;
     };
 
+    auto add_category() -> void;
     auto print_category() -> void;
     auto delete_category() -> void;
-    auto add_category(const std::string &category_name) -> void;
     [[nodiscard]] auto get_category_by_ID(std::size_t category_ID) const -> std::optional<Category>;
     [[nodiscard]] auto get_category_by_name(const std::string &category_name) const -> std::optional<Category>;
     [[nodiscard]] auto get_category(const std::variant<std::size_t,
