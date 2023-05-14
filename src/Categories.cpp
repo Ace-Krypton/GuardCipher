@@ -54,7 +54,9 @@ auto Categories::delete_category() -> void {
     fmt::print("Choose Category to Delete: ");
 
     std::string input;
-    std::cin >> input;
+    std::cin.ignore(
+            std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, input);
 
     std::variant<std::size_t, std::string> identifier;
     try {
@@ -64,9 +66,16 @@ auto Categories::delete_category() -> void {
         identifier = input;
     }
 
-    std::optional<Categories::Category> category = get_category(identifier);
+    std::optional<Category> category = get_category(identifier);
     if (category.has_value()) {
-        _categories.erase(category->id);
-        fmt::print("Category deleted successfully.\n");
-    } else fmt::print("Category not found.\n");
+        fmt::print("Are you sure you want to delete the category '{}'? (Y/N): ",
+                   category->category_name);
+        std::string confirmation;
+        std::getline(std::cin, confirmation);
+        if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
+            _categories.erase(category->id);
+            fmt::print("[+] Category Deleted Successfully\n");
+        } else fmt::print("[-] Deletion canceled\n");
+
+    } else fmt::print("[-] Category not found\n");
 }
