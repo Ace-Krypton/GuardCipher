@@ -47,17 +47,21 @@ auto Categories::get_category(const std::variant<std::size_t,
     return std::nullopt;
 }
 
-auto Categories::print_category() -> void {
-    if (!_categories.empty()) {
+auto Categories::print_category() -> bool {
+    bool has_categories = !_categories.empty();
+
+    if (has_categories) {
         for (const auto &category : _categories) {
             fmt::print("[+] ID: {} Name: {}\n",
-                       category.second.id ,category.second.category_name);
+                       category.second.id, category.second.category_name);
         }
-    } else fmt::print("\n[-] No Category Found\n");
+    } else fmt::print("[-] No Category Found\n");
+
+    return has_categories;
 }
 
 auto Categories::delete_category() -> void {
-    print_category();
+    if (!print_category()) return;
     fmt::print("Choose Category to Delete: ");
 
     std::string input;
