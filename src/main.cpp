@@ -8,7 +8,7 @@
 auto main() -> int {
     categories category;
 
-    std::vector<menu::menu_item> menu {
+    std::vector<menu::item> menu {
             {1, "Add a category"},
             {2, "Remove a category"},
             {3, "Print a category"},
@@ -21,7 +21,7 @@ auto main() -> int {
             {0, "Exit"},
     };
 
-    menu::process_menu(category, menu);
+    menu::process(category, menu);
 
     return 0;
 }

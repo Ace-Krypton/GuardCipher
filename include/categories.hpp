@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <vector>
 #include <cstdint>
 #include <variant>
 #include <optional>
@@ -17,16 +18,17 @@ class categories {
 public:
     struct category {
         std::size_t id { };
-        std::string category_name;
+        std::string name;
+        std::vector<std::string> passwords;
     };
 
-    auto add_category() -> void;
-    auto print_category() -> bool;
-    auto delete_category() -> void;
-    [[nodiscard]] auto get_category_by_ID(std::size_t category_ID) const -> std::optional<category>;
-    [[nodiscard]] auto get_category_by_name(const std::string &category_name) const -> std::optional<category>;
-    [[nodiscard]] auto get_category(const std::variant<std::size_t,
-                                    std::string> &identifier) const -> std::optional<category>;
+    auto add() -> void;
+    auto print() -> bool;
+    auto remove() -> void;
+    [[nodiscard]] auto get_ID(std::size_t category_ID) const -> std::optional<category>;
+    [[nodiscard]] auto get_name(const std::string &category_name) const -> std::optional<category>;
+    [[nodiscard]] auto get_general(const std::variant<std::size_t,
+                                   std::string> &identifier) const -> std::optional<category>;
 
 private:
     std::size_t _current_ID = 1;

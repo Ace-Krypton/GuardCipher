@@ -6,5 +6,6 @@
 #pragma once
 
 class passwords {
-
+public:
+    auto add_password()
 };
