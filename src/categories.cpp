@@ -14,8 +14,8 @@ auto categories::add() -> void {
     std::getline(std::cin, category_name);
 
     new_category.name = category_name;
-    new_category.id = _current_ID++;
-    _categories[new_category.id] = new_category;
+    new_category.ID = _current_ID++;
+    _categories[new_category.ID] = new_category;
     fmt::print("\n[+] Category Added Successfully\n");
     print();
 }
@@ -35,8 +35,7 @@ auto categories::get_name(const std::string &category_name) const -> std::option
     return std::nullopt;
 }
 
-auto categories::get_general(const std::variant<std::size_t,
-                               std::string> &identifier) const -> std::optional<category> {
+auto categories::get(const std::variant<std::size_t, std::string> &identifier) const -> std::optional<category> {
     if (std::holds_alternative<std::size_t>(identifier)) {
         std::size_t category_ID = std::get<std::size_t>(identifier);
         return get_ID(category_ID);
@@ -52,7 +51,7 @@ auto categories::print() -> bool {
     if (has_categories) {
         for (const auto &category : _categories) {
             fmt::print("[+] ID: {} Name: {}\n",
-                       category.second.id, category.second.name);
+                       category.second.ID, category.second.name);
         }
     } else fmt::print("[-] No Category Found\n");
 
@@ -75,14 +74,14 @@ auto categories::remove() -> void {
         identifier = input;
     }
 
-    std::optional<category> category = get_general(identifier);
+    std::optional<category> category = get(identifier);
     if (category.has_value()) {
         fmt::print("Are You Sure You Want to Delete the Category '{}'? (Y/N): ",
                    category->name);
         std::string confirmation;
         std::getline(std::cin, confirmation);
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
-            _categories.erase(category->id);
+            _categories.erase(category->ID);
             fmt::print("[+] Category Deleted Successfully\n");
         } else fmt::print("[-] Deletion Canceled\n");
 

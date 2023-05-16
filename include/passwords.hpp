@@ -7,5 +7,5 @@
 
 class passwords {
 public:
-    auto add_password()
+//    auto add_password()
 };
