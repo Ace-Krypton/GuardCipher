@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 
+#include "passwords.hpp"
 #include "categories.hpp"
 
 class menu {

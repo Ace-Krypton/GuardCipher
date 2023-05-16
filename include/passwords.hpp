@@ -5,7 +5,12 @@
 
 #pragma once
 
+#include <regex>
+
+#include "../include/categories.hpp"
+
 class passwords {
 public:
-//    auto add_password()
+    static auto add() -> void;
+    static auto is_secure(const std::string &password) -> bool;
 };

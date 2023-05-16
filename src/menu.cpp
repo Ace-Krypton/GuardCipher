@@ -52,6 +52,7 @@ auto menu::handle_option(categories &category, std::size_t option_ID, std::atomi
     switch (option_ID) {
         case 1: category.add(); break;
         case 2: category.remove(); break;
+        case 3: passwords::add(); break;
         case 0: flag.store(false); break;
         default: fmt::print("\n[-] Invalid Input, Try Again\n");
     }
