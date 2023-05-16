@@ -15,7 +15,7 @@ auto menu::display(const std::vector<item> &menu) -> void {
     fmt::print("==================================================|\n");
 }
 
-auto menu::process(categories &category, const std::vector<item> &menu) -> void {
+auto menu::process(passwords &password, categories &category, const std::vector<item> &menu) -> void {
     std::atomic<bool> flag = true;
     while (flag.load()) {
         std::function<void(const std::vector<item>&)> process_menu_recursive;
@@ -34,7 +34,7 @@ auto menu::process(categories &category, const std::vector<item> &menu) -> void 
             std::optional<item> selected = find_item(current_menu, choice);
             if (selected) {
                 if (!selected->sub_menu.empty()) process_menu_recursive(selected->sub_menu);
-                else handle_option(category, selected->id, flag);
+                else handle_option(password, category, selected->id, flag);
             } else fmt::print("\n[-] Invalid Input, Try Again\n");
         };
         process_menu_recursive(menu);
@@ -48,11 +48,12 @@ auto menu::find_item(const std::vector<item> &menu, std::size_t id) -> std::opti
     return std::nullopt;
 }
 
-auto menu::handle_option(categories &category, std::size_t option_ID, std::atomic<bool> &flag) -> void {
+auto menu::handle_option(passwords &password, categories &category,
+                         std::size_t option_ID, std::atomic<bool> &flag) -> void {
     switch (option_ID) {
         case 1: category.add(); break;
         case 2: category.remove(); break;
-        case 3: passwords::add(category); break;
+        case 3: password.add(category); break;
         case 0: flag.store(false); break;
         default: fmt::print("\n[-] Invalid Input, Try Again\n");
     }

@@ -6,6 +6,7 @@
 #include "../include/menu.hpp"
 
 auto main() -> int {
+    passwords password;
     categories category;
 
     std::vector<menu::item> menu {
@@ -21,7 +22,7 @@ auto main() -> int {
             {0, "Exit"},
     };
 
-    menu::process(category, menu);
+    menu::process(password, category, menu);
 
     return 0;
 }

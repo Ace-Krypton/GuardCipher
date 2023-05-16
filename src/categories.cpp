@@ -6,7 +6,7 @@
 #include "../include/categories.hpp"
 
 auto categories::add() -> void {
-    category new_category;
+    struct category new_category;
 
     fmt::print("Enter the Category Name: ");
     std::string category_name;

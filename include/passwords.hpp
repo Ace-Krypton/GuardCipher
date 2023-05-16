@@ -11,6 +11,15 @@
 
 class passwords {
 public:
-    static auto add(categories &category) -> void;
+    struct password {
+        std::size_t ID;
+        std::string name;
+    };
+
+    auto add(categories &category) -> void;
     static auto is_secure(const std::string &password) -> bool;
+
+private:
+    std::size_t _current_ID = 1;
+    std::map<std::size_t, password> _pass_without_categories;
 };

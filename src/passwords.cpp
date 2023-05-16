@@ -6,22 +6,31 @@
 #include "../include/passwords.hpp"
 
 auto passwords::add(categories &category) -> void {
-    std::string password;
+    std::string password_input;
 
     std::function<void(std::string&)> add_recursive = [&](std::string &password) -> void {
-        fmt::print("Enter the Password: ");
+        fmt::print("\nEnter the Password: ");
         std::cin >> password;
         if (!is_secure(password)) {
             fmt::print("[-] Password is not Secure, Try Again\n");
             add_recursive(password);
         }
     };
-    add_recursive(password);
+    add_recursive(password_input);
 
-    fmt::print("[+] Password Created Successfully");
+    fmt::print("\n[+] Password Created Successfully\n\n");
+    fmt::print("---------------------------------------");
 
-    if (!category.print()) return;
-    fmt::print("Choose Category to Add Password: ");
+    if (!category.print()) {
+        fmt::print("[+] No Category Found, Adding to Password List\n");
+        struct password new_password;
+        new_password.name = password_input;
+        new_password.ID = _current_ID++;
+        _pass_without_categories[new_password.ID] = new_password;
+        fmt::print("\n[+] Password Added Successfully\n");
+    }
+
+    fmt::print("\nChoose Category to Add Password: ");
 
     std::string input;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -42,7 +51,7 @@ auto passwords::add(categories &category) -> void {
         std::string confirmation;
         std::getline(std::cin, confirmation);
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
-            selected_category->passwords.emplace_back(password);
+            selected_category->passwords.emplace_back(password_input);
             fmt::print("[+] Password Added Successfully\n");
         } else fmt::print("[-] Canceled\n");
 
