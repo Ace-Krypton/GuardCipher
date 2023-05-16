@@ -29,7 +29,8 @@ public:
     [[nodiscard]] auto get_name(const std::string &category_name) const -> std::optional<category>;
     [[nodiscard]] auto get(const std::variant<std::size_t, std::string> &identifier) const -> std::optional<category>;
 
+    std::map<std::size_t, category> categories_map;
+
 private:
     std::size_t _current_ID = 1;
-    std::map<std::size_t, category> _categories;
 };

@@ -11,6 +11,6 @@
 
 class passwords {
 public:
-    static auto add() -> void;
+    static auto add(categories &category) -> void;
     static auto is_secure(const std::string &password) -> bool;
 };

@@ -15,18 +15,18 @@ auto categories::add() -> void {
 
     new_category.name = category_name;
     new_category.ID = _current_ID++;
-    _categories[new_category.ID] = new_category;
+    categories_map[new_category.ID] = new_category;
     fmt::print("\n[+] Category Added Successfully\n");
 }
 
 auto categories::get_ID(std::size_t category_ID) const -> std::optional<category> {
-    auto it = _categories.find(category_ID);
-    if (it != _categories.end()) return it->second;
+    auto it = categories_map.find(category_ID);
+    if (it != categories_map.end()) return it->second;
     return std::nullopt;
 }
 
 auto categories::get_name(const std::string &category_name) const -> std::optional<category> {
-    for (const auto &element : _categories) {
+    for (const auto &element : categories_map) {
         if (element.second.name == category_name) {
             return element.second;
         }
@@ -46,9 +46,9 @@ auto categories::get(const std::variant<std::size_t, std::string> &identifier) c
 }
 
 auto categories::print() -> bool {
-    bool has_categories = !_categories.empty();
+    bool has_categories = !categories_map.empty();
     if (has_categories) {
-        for (const auto &category : _categories) {
+        for (const auto &category : categories_map) {
             fmt::print("[+] ID: {} Name: {}\n",
                        category.second.ID, category.second.name);
         }
@@ -73,16 +73,16 @@ auto categories::remove() -> void {
         identifier = input;
     }
 
-    std::optional<category> category = get(identifier);
-    if (category.has_value()) {
+    std::optional<category> category_selected = get(identifier);
+    if (category_selected.has_value()) {
         fmt::print("Are You Sure You Want to Delete the Category '{}'? (Y/N): ",
-                   category->name);
+                   category_selected->name);
         std::string confirmation;
         std::getline(std::cin, confirmation);
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
-            _categories.erase(category->ID);
+            categories_map.erase(category_selected->ID);
             fmt::print("[+] Category Deleted Successfully\n");
-        } else fmt::print("[-] Deletion Canceled\n");
+        } else fmt::print("[-] Canceled\n");
 
     } else fmt::print("[-] Category Not Found\n");
 }
