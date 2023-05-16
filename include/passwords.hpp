@@ -5,6 +5,6 @@
 
 #pragma once
 
-class Passwords {
+class passwords {
 
 };

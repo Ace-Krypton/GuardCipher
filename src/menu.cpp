@@ -3,23 +3,23 @@
  * See LICENSE file for license details
  */
 
-#include "../include/Menu.hpp"
+#include "../include/menu.hpp"
 
-auto Menu::display_menu(const std::vector<MenuItem> &menu) -> void {
+auto menu::display_menu(const std::vector<menu_item> &menu) -> void {
     fmt::print("\n==================================================|\n");
     fmt::print("               Password Manager                   |\n");
     fmt::print("==================================================|\n");
-    for (const MenuItem &item : menu) {
+    for (const menu_item &item : menu) {
         fmt::print("[{}] {}\n", item.id, item.label);
     }
     fmt::print("==================================================|\n");
 }
 
-auto Menu::process_menu(Categories &category, const std::vector<MenuItem> &menu) -> void {
+auto menu::process_menu(categories &category, const std::vector<menu_item> &menu) -> void {
     std::atomic<bool> flag = true;
     while (flag.load()) {
-        std::function<void(const std::vector<MenuItem>&)> process_menu_recursive;
-        process_menu_recursive = [&](const std::vector<MenuItem> &current_menu) -> void {
+        std::function<void(const std::vector<menu_item>&)> process_menu_recursive;
+        process_menu_recursive = [&](const std::vector<menu_item> &current_menu) -> void {
             display_menu(current_menu);
 
             fmt::print("\n-> ");
@@ -31,7 +31,7 @@ auto Menu::process_menu(Categories &category, const std::vector<MenuItem> &menu)
                 return;
             }
 
-            std::optional<MenuItem> selected = find_menu_item(current_menu, choice);
+            std::optional<menu_item> selected = find_menu_item(current_menu, choice);
             if (selected) {
                 if (!selected->sub_menu.empty()) process_menu_recursive(selected->sub_menu);
                 else handle_menu_option(category, selected->id, flag);
@@ -41,14 +41,14 @@ auto Menu::process_menu(Categories &category, const std::vector<MenuItem> &menu)
     }
 }
 
-auto Menu::find_menu_item(const std::vector<MenuItem> &menu, std::size_t id) -> std::optional<Menu::MenuItem> {
-    for (const MenuItem &item : menu) {
+auto menu::find_menu_item(const std::vector<menu_item> &menu, std::size_t id) -> std::optional<menu::menu_item> {
+    for (const menu_item &item : menu) {
         if (item.id == id) return item;
     }
     return std::nullopt;
 }
 
-auto Menu::handle_menu_option(Categories &category, std::size_t option_ID, std::atomic<bool> &flag) -> void {
+auto menu::handle_menu_option(categories &category, std::size_t option_ID, std::atomic<bool> &flag) -> void {
     switch (option_ID) {
         case 1: category.add_category(); break;
         case 2: category.delete_category(); break;

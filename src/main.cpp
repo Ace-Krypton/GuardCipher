@@ -3,12 +3,12 @@
  * See LICENSE file for license details
  */
 
-#include "../include/Menu.hpp"
+#include "../include/menu.hpp"
 
 auto main() -> int {
-    Categories category;
+    categories category;
 
-    std::vector<Menu::MenuItem> menu {
+    std::vector<menu::menu_item> menu {
             {1, "Add a category"},
             {2, "Remove a category"},
             {3, "Print a category"},
@@ -21,7 +21,7 @@ auto main() -> int {
             {0, "Exit"},
     };
 
-    Menu::process_menu(category, menu);
+    menu::process_menu(category, menu);
 
     return 0;
 }

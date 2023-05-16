@@ -13,9 +13,9 @@
 #include <iostream>
 #include <fmt/core.h>
 
-class Categories {
+class categories {
 public:
-    struct Category {
+    struct category {
         std::size_t id { };
         std::string category_name;
     };
@@ -23,12 +23,12 @@ public:
     auto add_category() -> void;
     auto print_category() -> bool;
     auto delete_category() -> void;
-    [[nodiscard]] auto get_category_by_ID(std::size_t category_ID) const -> std::optional<Category>;
-    [[nodiscard]] auto get_category_by_name(const std::string &category_name) const -> std::optional<Category>;
+    [[nodiscard]] auto get_category_by_ID(std::size_t category_ID) const -> std::optional<category>;
+    [[nodiscard]] auto get_category_by_name(const std::string &category_name) const -> std::optional<category>;
     [[nodiscard]] auto get_category(const std::variant<std::size_t,
-                                    std::string> &identifier) const -> std::optional<Category>;
+                                    std::string> &identifier) const -> std::optional<category>;
 
 private:
     std::size_t _current_ID = 1;
-    std::map<std::size_t, Category> _categories;
+    std::map<std::size_t, category> _categories;
 };
