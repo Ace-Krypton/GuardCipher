@@ -17,7 +17,6 @@ auto categories::add() -> void {
     new_category.ID = _current_ID++;
     _categories[new_category.ID] = new_category;
     fmt::print("\n[+] Category Added Successfully\n");
-    print();
 }
 
 auto categories::get_ID(std::size_t category_ID) const -> std::optional<category> {

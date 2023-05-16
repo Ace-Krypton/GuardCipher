@@ -6,13 +6,19 @@
 #include "../include/passwords.hpp"
 
 auto passwords::add() -> void {
-    fmt::print("Enter the Password: ");
-    std::string password;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::getline(std::cin, password);
-    if (!is_secure(password)) fmt::print("Your password is not secure");
-    else fmt::print("Your password is secure");
+    std::function<void()> add_recursive = [&add_recursive]() -> void {
+        fmt::print("Enter the Password: ");
+        std::string password;
+        std::cin >> password;
+        if (!is_secure(password)) {
+            fmt::print("[-] Password is not Secure, Try Again\n");
+            add_recursive();
+        }
+    };
+
+    add_recursive();
 }
+
 
 auto passwords::is_secure(const std::string &password) -> bool {
     if (password.length() < 8) return false;
@@ -22,9 +28,9 @@ auto passwords::is_secure(const std::string &password) -> bool {
     bool has_lower_case = false;
 
     for (char c : password) {
-        if (isupper(c)) has_upper_case = true;
-        else if (islower(c)) has_lower_case = true;
-        else if (isdigit(c)) has_numeric = true;
+        has_numeric    |= isdigit(c);
+        has_upper_case |= isupper(c);
+        has_lower_case |= islower(c);
     }
 
     if (!has_upper_case || !has_lower_case || !has_numeric) return false;
