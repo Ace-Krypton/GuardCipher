@@ -34,7 +34,8 @@ auto categories::get_name(const std::string &category_name) const -> std::option
     return std::nullopt;
 }
 
-auto categories::get(const std::variant<std::size_t, std::string> &identifier) const -> std::optional<category> {
+auto categories::get(const std::variant<std::size_t,
+                     std::string> &identifier) const -> std::optional<category> {
     if (std::holds_alternative<std::size_t>(identifier)) {
         std::size_t category_ID = std::get<std::size_t>(identifier);
         return get_ID(category_ID);
@@ -49,8 +50,11 @@ auto categories::print() -> bool {
     bool has_categories = !categories_map.empty();
     if (has_categories) {
         for (const auto &category : categories_map) {
-            fmt::print("[+] ID: {} Name: {}\n",
+            fmt::print("\n[+] ID: {} Name: {}\n Passwords: ",
                        category.second.ID, category.second.name);
+            for (const std::string &password : category.second.passwords) {
+                fmt::print("{}\n", password);
+            }
         }
     } else fmt::print("[-] No Category Found\n");
 

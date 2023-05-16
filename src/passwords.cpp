@@ -19,15 +19,16 @@ auto passwords::add(categories &category) -> void {
     add_recursive(password_input);
 
     fmt::print("\n[+] Password Created Successfully\n\n");
-    fmt::print("---------------------------------------");
+    fmt::print("---------------------------------------\n");
 
     if (!category.print()) {
-        fmt::print("[+] No Category Found, Adding to Password List\n");
+        fmt::print("[-] No Category Found, Adding to Password List\n");
         struct password new_password;
         new_password.name = password_input;
         new_password.ID = _current_ID++;
         _pass_without_categories[new_password.ID] = new_password;
         fmt::print("\n[+] Password Added Successfully\n");
+        return;
     }
 
     fmt::print("\nChoose Category to Add Password: ");
@@ -51,7 +52,8 @@ auto passwords::add(categories &category) -> void {
         std::string confirmation;
         std::getline(std::cin, confirmation);
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
-            selected_category->passwords.emplace_back(password_input);
+            selected_category->passwords.push_back(password_input);
+            fmt::print("{}", selected_category->passwords.front());
             fmt::print("[+] Password Added Successfully\n");
         } else fmt::print("[-] Canceled\n");
 
