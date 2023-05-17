@@ -49,14 +49,15 @@ auto categories::get(const std::variant<std::size_t,
 auto categories::print() -> bool {
     bool has_categories = !categories_map.empty();
     if (has_categories) {
+        fmt::print("\n----------- Categories -----------\n");
         for (const auto &category : categories_map) {
-            fmt::print("\n[+] ID: {} Name: {}\n Passwords: ",
+            fmt::print("\n[+] ID: {} Name: {}\n Passwords:\n",
                        category.second.ID, category.second.name);
             for (const std::string &password : category.second.passwords) {
-                fmt::print("{}\n", password);
+                fmt::print(" {}\n", password);
             }
         }
-    } else fmt::print("[-] No Category Found\n");
+    } else fmt::print("\n[-] No Category Found\n");
 
     return has_categories;
 }
@@ -82,7 +83,7 @@ auto categories::remove() -> void {
         fmt::print("Are You Sure You Want to Delete the Category '{}'? (Y/N): ",
                    category_selected->name);
         std::string confirmation;
-        std::getline(std::cin, confirmation);
+        std::cin >> confirmation;
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
             categories_map.erase(category_selected->ID);
             fmt::print("[+] Category Deleted Successfully\n");

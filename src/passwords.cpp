@@ -21,13 +21,18 @@ auto passwords::add(categories &category) -> void {
     fmt::print("\n[+] Password Created Successfully\n\n");
     fmt::print("---------------------------------------\n");
 
-    if (!category.print()) {
-        fmt::print("[-] No Category Found, Adding to Password List\n");
+    fmt::print("Do You Want to Add \"{}\", to Categories? (Y/N):", password_input);
+    std::string confirmation_adding;
+    std::cin >> confirmation_adding;
+
+    if (!category.print() || (confirmation_adding.size() == 1
+                        && std::toupper(confirmation_adding[0]) == 'Y')) {
+        fmt::print("[+] Adding to Password List");
         struct password new_password;
         new_password.name = password_input;
         new_password.ID = _current_ID++;
         _pass_without_categories[new_password.ID] = new_password;
-        fmt::print("\n[+] Password Added Successfully\n");
+        fmt::print("\n[+] Password Added to List Successfully\n");
         return;
     }
 
@@ -50,7 +55,7 @@ auto passwords::add(categories &category) -> void {
         fmt::print("Are You Sure You Want to Add Password to This Category '{}'? (Y/N): ",
                    selected_category->name);
         std::string confirmation;
-        std::getline(std::cin, confirmation);
+        std::cin >> confirmation_adding;
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
             auto category_it = category.categories_map.find(selected_category->ID);
             category_it->second.passwords.emplace_back(password_input);
