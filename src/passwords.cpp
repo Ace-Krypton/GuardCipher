@@ -52,8 +52,8 @@ auto passwords::add(categories &category) -> void {
         std::string confirmation;
         std::getline(std::cin, confirmation);
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
-            selected_category->passwords.push_back(password_input);
-            fmt::print("{}", selected_category->passwords.front());
+            auto category_it = category.categories_map.find(selected_category->ID);
+            category_it->second.passwords.emplace_back(password_input);
             fmt::print("[+] Password Added Successfully\n");
         } else fmt::print("[-] Canceled\n");
 
