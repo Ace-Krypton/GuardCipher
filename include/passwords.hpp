@@ -17,8 +17,9 @@ public:
         std::string name;
     };
 
-    auto generator(int password_length, bool has_upper_case,
+    static auto generator(int password_length, bool has_upper_case,
                    bool has_lower_case, bool has_special_chars) -> std::string;
+    static auto read_input(const std::string& prompt, const std::string& error_message) -> int;
     auto add(categories &category) -> void;
     static auto is_secure(const std::string &password) -> bool;
 

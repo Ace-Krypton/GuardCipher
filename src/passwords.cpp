@@ -5,18 +5,53 @@
 
 #include "../include/passwords.hpp"
 
-auto passwords::add(categories &category) -> void {
-    std::string password_input;
-
-    std::function<void(std::string&)> add_recursive = [&](std::string &password) -> void {
-        fmt::print("\nEnter the Password: ");
-        std::cin >> password;
-        if (!is_secure(password)) {
-            fmt::print("[-] Password is not Secure, Try Again\n");
-            add_recursive(password);
+auto passwords::read_input(const std::string& prompt, const std::string& error_message) -> int {
+    while (true) {
+        std::cout << prompt;
+        int value;
+        if (std::cin >> value) {
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            return value;
         }
-    };
-    add_recursive(password_input);
+        std::cout << error_message << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
+
+auto passwords::add(categories& category) -> void {
+    std::string password_input;
+    fmt::print("Choose password generation method:\n");
+    fmt::print("1. Manual\n");
+    fmt::print("2. Automatic\n");
+    int choice = read_input("Enter your choice (1 or 2): ",
+                            "Invalid input. Please enter a number.");
+
+    if (choice == 2) {
+        int password_length = read_input("Password Length: ",
+                                         "Invalid input. Please enter a number.");
+        bool has_upper_case = read_input("Include Uppercase Letters (1 for yes, 0 for no): ",
+                                         "Invalid input. Please enter either 0 or 1.") != 0;
+        bool has_lower_case = read_input("Include Lowercase Letters (1 for yes, 0 for no): ",
+                                         "Invalid input. Please enter either 0 or 1.") != 0;
+        bool has_special_chars = read_input("Include Special Characters (1 for yes, 0 for no): ",
+                                            "Invalid input. Please enter either 0 or 1.") != 0;
+        password_input = generator(password_length, has_upper_case, has_lower_case,
+                                   has_special_chars);
+    } else if (choice == 1) {
+        std::function<void(std::string&)> add_recursive = [&](std::string& password) -> void {
+            fmt::print("\nEnter the Password: ");
+            std::cin >> password;
+            if (!is_secure(password)) {
+                fmt::print("[-] Password is not Secure, Try Again\n");
+                add_recursive(password);
+            }
+        };
+        add_recursive(password_input);
+    } else {
+        fmt::print("Invalid choice. Exiting password creation.\n");
+        return;
+    }
 
     fmt::print("\n[+] Password Created Successfully\n\n");
     fmt::print("---------------------------------------\n");
@@ -25,8 +60,7 @@ auto passwords::add(categories &category) -> void {
     std::string confirmation_adding;
     std::cin >> confirmation_adding;
 
-    if (!category.print() || (confirmation_adding.size() == 1
-                        && std::toupper(confirmation_adding[0]) == 'Y')) {
+    if (!category.print() || (confirmation_adding.size() == 1 && std::toupper(confirmation_adding[0]) == 'Y')) {
         fmt::print("[+] Adding to Password List");
         struct password new_password;
         new_password.name = password_input;
@@ -52,8 +86,7 @@ auto passwords::add(categories &category) -> void {
 
     std::optional<categories::category> selected_category = category.get(identifier);
     if (selected_category.has_value()) {
-        fmt::print("Are You Sure You Want to Add Password to This Category '{}'? (Y/N): ",
-                   selected_category->name);
+        fmt::print("Are You Sure You Want to Add Password to This Category '{}'? (Y/N): ", selected_category->name);
         std::string confirmation;
         std::cin >> confirmation_adding;
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {

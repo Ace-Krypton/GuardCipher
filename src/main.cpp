@@ -15,15 +15,10 @@ auto main() -> int {
             {3, "Print Category"},
             {4, "Search for Passwords"},
             {5, "Sort Passwords"},
-            {6, "Add Password",
-             {
-                {10, "Add Password Manually"},
-                {11, "Generate Password"},
-                },
-             },
+            {6, "Add Password"},
             {7, "Edit Password"},
             {8, "Remove Password"},
-            {9, "Write Changes To File"},
+            {9, "Write Changes To a File"},
             {0, "Exit"},
     };
 
