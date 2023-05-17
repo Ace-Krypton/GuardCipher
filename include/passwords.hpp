@@ -6,6 +6,7 @@
 #pragma once
 
 #include <regex>
+#include <random>
 
 #include "../include/categories.hpp"
 
@@ -16,6 +17,8 @@ public:
         std::string name;
     };
 
+    auto generator(int password_length, bool has_upper_case,
+                   bool has_lower_case, bool has_special_chars) -> std::string;
     auto add(categories &category) -> void;
     static auto is_secure(const std::string &password) -> bool;
 

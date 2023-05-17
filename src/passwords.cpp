@@ -88,3 +88,31 @@ auto passwords::is_secure(const std::string &password) -> bool {
 
     return true;
 }
+
+auto passwords::generator(int password_length, bool has_upper_case,
+                          bool has_lower_case, bool has_special_chars) -> std::string {
+    std::string characters;
+
+    if (has_lower_case) characters += "abcdefghijklmnopqrstuvwxyz";
+    if (has_upper_case) characters += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (has_special_chars) characters += "!@#$%^&*()_+";
+
+    if (characters.empty()) {
+        fmt::print("[-] No Character Type Selected For Password Generation\n");
+        return { };
+    }
+
+    std::random_device rd;
+    std::mt19937 generator(rd());
+
+    std::uniform_int_distribution<std::size_t> char_distribution(0, characters.length() - 1);
+    std::string password;
+    password.reserve(password_length);
+
+    std::generate_n(std::back_inserter(password),
+                    password_length, [&]() -> char {
+        return characters[char_distribution(generator)];
+    });
+
+    return password;
+}

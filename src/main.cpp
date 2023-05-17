@@ -10,15 +10,20 @@ auto main() -> int {
     categories category;
 
     std::vector<menu::item> menu {
-            {1, "Add a category"},
-            {2, "Remove a category"},
-            {3, "Print a category"},
-            {4, "Search for passwords"},
-            {5, "Sort passwords"},
-            {6, "Add a password"},
-            {7, "Edit a password"},
-            {8, "Remove a password"},
-            {9, "Write changes to a file"},
+            {1, "Add Category"},
+            {2, "Remove Category"},
+            {3, "Print Category"},
+            {4, "Search for Passwords"},
+            {5, "Sort Passwords"},
+            {6, "Add Password",
+             {
+                {10, "Add Password Manually"},
+                {11, "Generate Password"},
+                },
+             },
+            {7, "Edit Password"},
+            {8, "Remove Password"},
+            {9, "Write Changes To File"},
             {0, "Exit"},
     };
 
