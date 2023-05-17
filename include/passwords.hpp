@@ -22,7 +22,7 @@ public:
                           bool has_lower_case, bool has_special_chars) -> std::string;
     static auto is_secure(const std::string &password) -> bool;
     static auto read_input(const std::string &prompt, const std::string &error_message,
-                           const std::vector<int>& valid_values) -> int;
+                           const std::vector<int> &valid_values) -> int;
 
 private:
     std::size_t _current_ID = 1;

@@ -27,23 +27,28 @@ auto passwords::add(categories &category) -> void {
                             "Invalid Input. Please Enter a Correct Number.", {1, 2});
 
     if (choice == 1) {
-        std::vector<int> valid_lengths(50);
-        std::iota(valid_lengths.begin(), valid_lengths.end(), 1);
+        while (true) {
+            std::vector<int> valid_lengths(50);
+            std::iota(valid_lengths.begin(), valid_lengths.end(), 1);
 
-        int password_length = read_input("Password Length (Max Length 50): ",
-                                         "Invalid Range. Please Enter a Correct Length.",
-                                         valid_lengths);
-        bool has_upper_case = read_input("Include Uppercase Letters (1 for yes, 0 for no): ",
-                                         "Invalid Input. Please Enter Either 0 or 1.",
-                                         {0, 1});
-        bool has_lower_case = read_input("Include Lowercase Letters (1 for yes, 0 for no): ",
-                                         "Invalid Input. Please Enter Either 0 or 1.",
-                                         {0, 1});
-        bool has_special_chars = read_input("Include Special Characters (1 for yes, 0 for no): ",
-                                            "Invalid Input. Please Enter Either 0 or 1.",
-                                            {0, 1});
+            int password_length = read_input("\nPassword Length (Max Length 50): ",
+                                             "Invalid Range. Please Enter Correct Length.",
+                                             valid_lengths);
+            bool has_upper_case = read_input("Include Uppercase Letters (1 for yes, 0 for no): ",
+                                             "Invalid Input. Please Enter Either 0 or 1.",
+                                             {0, 1});
+            bool has_lower_case = read_input("Include Lowercase Letters (1 for yes, 0 for no): ",
+                                             "Invalid Input. Please Enter Either 0 or 1.",
+                                             {0, 1});
+            bool has_special_chars = read_input("Include Special Characters (1 for yes, 0 for no): ",
+                                                "Invalid Input. Please Enter Either 0 or 1.",
+                                                {0, 1});
 
-        password_input = generator(password_length, has_upper_case, has_lower_case, has_special_chars);
+            password_input = generator(password_length, has_upper_case, has_lower_case, has_special_chars);
+            if (password_input != "hope I will get good points") {
+                break;
+            }
+        }
     } else if (choice == 2) {
         std::function<void(std::string&)> add_recursive = [&](std::string &password) -> void {
             fmt::print("\nEnter the Password: ");
@@ -139,8 +144,8 @@ auto passwords::generator(int password_length, bool has_upper_case,
     if (has_special_chars) characters += "!@#$%^&*()_+";
 
     if (characters.empty()) {
-        fmt::print("[-] No Character Type Selected For Password Generation\n");
-        return { };
+        fmt::print("\n[-] No Character Type Selected For Password Generation\n");
+        return "hope I will get good points";
     }
 
     std::random_device rd;

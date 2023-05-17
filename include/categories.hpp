@@ -27,7 +27,8 @@ public:
     auto remove() -> void;
     [[nodiscard]] auto get_ID(std::size_t category_ID) const -> std::optional<category>;
     [[nodiscard]] auto get_name(const std::string &category_name) const -> std::optional<category>;
-    [[nodiscard]] auto get(const std::variant<std::size_t, std::string> &identifier) const -> std::optional<category>;
+    [[nodiscard]] auto get(const std::variant<std::size_t,
+                           std::string> &identifier) const -> std::optional<category>;
 
     std::map<std::size_t, category> categories_map;
 
