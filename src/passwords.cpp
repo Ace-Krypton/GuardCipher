@@ -45,9 +45,7 @@ auto passwords::add(categories &category) -> void {
                                                 {0, 1});
 
             password_input = generator(password_length, has_upper_case, has_lower_case, has_special_chars);
-            if (password_input != "hope I will get good points") {
-                break;
-            }
+            if (password_input != "error occured") break;
         }
     } else if (choice == 2) {
         std::function<void(std::string&)> add_recursive = [&](std::string &password) -> void {
@@ -145,7 +143,7 @@ auto passwords::generator(int password_length, bool has_upper_case,
 
     if (characters.empty()) {
         fmt::print("\n[-] No Character Type Selected For Password Generation\n");
-        return "hope I will get good points";
+        return "error occured";
     }
 
     std::random_device rd;
