@@ -17,7 +17,7 @@ public:
         std::string name;
     };
 
-    auto print() -> bool;
+    auto is_printable() -> bool;
     auto add(categories &category) -> void;
     auto sort(categories &category) -> void;
     auto remove(categories &category) -> void;

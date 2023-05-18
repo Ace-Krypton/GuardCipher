@@ -46,7 +46,8 @@ auto categories::get(const std::variant<std::size_t,
     return std::nullopt;
 }
 
-auto categories::print() -> bool {
+auto categories::is_printable() -> bool {
+    std::size_t password_id = 1;
     bool has_categories = !categories_map.empty();
     if (has_categories) {
         fmt::print("\n----------- Categories -----------\n");
@@ -54,7 +55,8 @@ auto categories::print() -> bool {
             fmt::print("\n[+] ID: {} Name: {}\n Passwords:\n",
                        category.second.ID, category.second.name);
             for (const std::string &password : category.second.passwords) {
-                fmt::print(" {}\n", password);
+                fmt::print("ID: {} {}\n", password_id, password);
+                ++password_id;
             }
         }
     } else fmt::print("\n[-] No Category Found\n");
@@ -63,7 +65,7 @@ auto categories::print() -> bool {
 }
 
 auto categories::remove() -> void {
-    if (!print()) return;
+    if (!is_printable()) return;
     fmt::print("Choose Category to Delete: ");
 
     std::string input;

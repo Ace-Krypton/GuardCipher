@@ -23,8 +23,8 @@ public:
     };
 
     auto add() -> void;
-    auto print() -> bool;
     auto remove() -> void;
+    auto is_printable() -> bool;
     [[nodiscard]] auto get_ID(std::size_t category_ID) const -> std::optional<category>;
     [[nodiscard]] auto get_name(const std::string &category_name) const -> std::optional<category>;
     [[nodiscard]] auto get(const std::variant<std::size_t,

@@ -32,18 +32,25 @@ auto passwords::add(categories &category) -> void {
             std::vector<int> valid_lengths(50);
             std::iota(valid_lengths.begin(), valid_lengths.end(), 1);
 
-            int password_length = read_input<int>("\nPassword Length (Max Length 50): ",
-                                             "Invalid Range. Please Enter Correct Length.",
-                                             valid_lengths);
-            bool has_upper_case = read_input<int>("Include Uppercase Letters (1 for yes, 0 for no): ",
-                                             "Invalid Input. Please Enter Either 0 or 1.",
-                                             {0, 1});
-            bool has_lower_case = read_input<int>("Include Lowercase Letters (1 for yes, 0 for no): ",
-                                             "Invalid Input. Please Enter Either 0 or 1.",
-                                             {0, 1});
-            bool has_special_chars = read_input<int>("Include Special Characters (1 for yes, 0 for no): ",
-                                                "Invalid Input. Please Enter Either 0 or 1.",
-                                                {0, 1});
+            int password_length =
+                    read_input<int>("\nPassword Length (Max Length 50): ",
+                                    "Invalid Range. Please Enter Correct Length.",
+                                    valid_lengths);
+
+            bool has_upper_case =
+                    read_input<int>("Include Uppercase Letters (1 for yes, 0 for no): ",
+                                    "Invalid Input. Please Enter Either 0 or 1.",
+                                    {0, 1});
+
+            bool has_lower_case =
+                    read_input<int>("Include Lowercase Letters (1 for yes, 0 for no): ",
+                                    "Invalid Input. Please Enter Either 0 or 1.",
+                                    {0, 1});
+
+            bool has_special_chars =
+                    read_input<int>("Include Special Characters (1 for yes, 0 for no): ",
+                                    "Invalid Input. Please Enter Either 0 or 1.",
+                                    {0, 1});
 
             password_input = generator(password_length, has_upper_case, has_lower_case, has_special_chars);
             if (password_input != "error occured") break;
@@ -70,8 +77,8 @@ auto passwords::add(categories &category) -> void {
     std::string confirmation_adding;
     std::cin >> confirmation_adding;
 
-    if (!category.print() || (confirmation_adding.size() == 1
-                        && std::toupper(confirmation_adding[0]) == 'N')) {
+    if (!category.is_printable() || (confirmation_adding.size() == 1
+                                     && std::toupper(confirmation_adding[0]) == 'N')) {
         fmt::print("[+] Adding to Password List");
         struct password new_password;
         new_password.name = password_input;
@@ -252,42 +259,75 @@ auto passwords::remove(categories &category) -> void {
                                    {1, 2});
 
     if (delete_option == 1) {
-        print();
-        auto password_id = read_input<std::size_t>("Enter the ID of the password to delete: ",
-                                             "Invalid ID. Please enter a valid ID.",
-                                             get_password_ids());
+        if (!is_printable()) {
+            fmt::print("\n[-]; No Passwords Found Inside of Password List");
+            return;
+        }
+
+        auto password_id =
+                read_input<std::size_t>("Enter the ID of the password to delete: ",
+                                        "Invalid ID. Please enter a valid ID.",
+                                        get_password_ids());
+
         auto password_it = _pass_without_categories.find(password_id);
+
         if (password_it != _pass_without_categories.end()) {
             _pass_without_categories.erase(password_it);
             fmt::print("[+] Password deleted successfully\n");
         } else fmt::print("[-] Password with ID {} not found\n", password_id);
 
     } else if (delete_option == 2) {
-        category.print();
-        std::size_t category_id = read_input("Enter the ID of the category: ",
-                                             "Invalid ID. Please enter a valid ID.",
-                                             category.get_category_ids());
-        auto category_it = category.categories_map.find(category_id);
-        if (category_it != category.categories_map.end()) {
-            category.categories_map.erase(category_it);
-            fmt::print("[+] Category deleted successfully\n");
-        } else {
-            fmt::print("[-] Category with ID {} not found\n", category_id);
+        if (!category.is_printable()) {
+            fmt::print("\n[-] No Categories Found");
+            return;
         }
+
+        std::variant<std::size_t, std::string> identifier;
+
+        std::string input;
+        fmt::print("Enter the Category: ");
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::getline(std::cin, input);
+
+        try {
+            std::size_t id = std::stoull(input);
+            identifier = id;
+        } catch (...) {
+            identifier = input;
+        }
+
+        std::optional<categories::category> selected_category = category.get(identifier);
+        if (selected_category.has_value()) {
+            auto password_id =
+                    read_input<std::size_t>("Enter the ID of the password to delete: ",
+                                            "Invalid ID. Please enter a valid ID.",
+                                            {1, selected_category->passwords.size()});
+
+            if (password_id >= 1 && password_id <= selected_category->passwords.size()) {
+                auto category_it = category.categories_map.find(selected_category->ID);
+                category_it->second.passwords.erase(
+                        selected_category->passwords.begin() + (static_cast<long>(password_id) - 1));
+                fmt::print("[+] Password Deleted Successfully\n");
+
+            } else fmt::print("[-] Invalid Password ID\n");
+        } else fmt::print("[-] Category Not Found\n");
     }
 }
 
 auto passwords::get_password_ids() const -> std::vector<std::size_t> {
     std::vector<std::size_t> password_ids;
     password_ids.reserve(_pass_without_categories.size());
+
     for (const auto &password : _pass_without_categories) {
         password_ids.push_back(password.first);
     }
+
     return password_ids;
 }
 
-auto passwords::print() -> bool {
+auto passwords::is_printable() -> bool {
     bool has_passwords = !_pass_without_categories.empty();
+
     if (has_passwords) {
         for (auto const &pass : _pass_without_categories) {
             fmt::print("\n[+] ID: {} Name: {}",
