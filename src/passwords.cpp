@@ -5,11 +5,12 @@
 
 #include "../include/passwords.hpp"
 
+template <typename T>
 auto passwords::read_input(const std::string &prompt, const std::string &error_message,
-                           const std::vector<int> &valid_values) -> int {
+                           const std::vector<T> &valid_values) -> T {
     while (true) {
         fmt::print("{}", prompt);
-        int value;
+        T value;
         if (std::cin >> value) {
             if (std::find(valid_values.begin(),
                           valid_values.end(), value) != valid_values.end()) { return value; }
@@ -23,7 +24,7 @@ auto passwords::add(categories &category) -> void {
     fmt::print("Choose password generation method:\n");
     fmt::print("[1] Automatic\n");
     fmt::print("[2] Manual\n");
-    int choice = read_input("Enter Your Choice (1 or 2): ",
+    int choice = read_input<int>("Enter Your Choice (1 or 2): ",
                             "Invalid Input. Please Enter a Correct Number.", {1, 2});
 
     if (choice == 1) {
@@ -31,16 +32,16 @@ auto passwords::add(categories &category) -> void {
             std::vector<int> valid_lengths(50);
             std::iota(valid_lengths.begin(), valid_lengths.end(), 1);
 
-            int password_length = read_input("\nPassword Length (Max Length 50): ",
+            int password_length = read_input<int>("\nPassword Length (Max Length 50): ",
                                              "Invalid Range. Please Enter Correct Length.",
                                              valid_lengths);
-            bool has_upper_case = read_input("Include Uppercase Letters (1 for yes, 0 for no): ",
+            bool has_upper_case = read_input<int>("Include Uppercase Letters (1 for yes, 0 for no): ",
                                              "Invalid Input. Please Enter Either 0 or 1.",
                                              {0, 1});
-            bool has_lower_case = read_input("Include Lowercase Letters (1 for yes, 0 for no): ",
+            bool has_lower_case = read_input<int>("Include Lowercase Letters (1 for yes, 0 for no): ",
                                              "Invalid Input. Please Enter Either 0 or 1.",
                                              {0, 1});
-            bool has_special_chars = read_input("Include Special Characters (1 for yes, 0 for no): ",
+            bool has_special_chars = read_input<int>("Include Special Characters (1 for yes, 0 for no): ",
                                                 "Invalid Input. Please Enter Either 0 or 1.",
                                                 {0, 1});
 
@@ -142,14 +143,15 @@ auto passwords::generator(int password_length, bool has_upper_case,
     if (has_special_chars) characters += "!@#$%^&*()_+";
 
     if (characters.empty()) {
-        fmt::print("\n[-] No Character Type Selected For Password Generation\n");
+        fmt::print("\n[-] No Character Type Selected\n");
         return "error occured";
     }
 
     std::random_device rd;
     std::mt19937 generator(rd());
 
-    std::uniform_int_distribution<std::size_t> char_distribution(0, characters.length() - 1);
+    std::uniform_int_distribution<std::size_t>
+            char_distribution(0, characters.length() - 1);
     std::string password;
     password.reserve(password_length);
 
@@ -192,7 +194,8 @@ auto passwords::search(const categories &category) -> void {
 }
 
 auto passwords::sort(categories &category) -> void {
-    int sort_option = read_input("Sort:\n[1] Password List\n[2] Category\nEnter your choice: ",
+    int sort_option = read_input<int>("Sort Password From:\n[1] Password List\n"
+                                 "[2] Category\nEnter your choice: ",
                                  "Invalid input. Please enter a valid option.",
                                  {1, 2});
 
@@ -240,4 +243,57 @@ auto passwords::sort(categories &category) -> void {
     }
 
     fmt::print("\n[+] Passwords sorted successfully\n");
+}
+
+auto passwords::remove(categories &category) -> void {
+    int delete_option = read_input<int>("Delete Password From:\n[1] Password List\n"
+                                   "[2] Category\nEnter your choice: ",
+                                   "Invalid input. Please enter a valid option.",
+                                   {1, 2});
+
+    if (delete_option == 1) {
+        print();
+        auto password_id = read_input<std::size_t>("Enter the ID of the password to delete: ",
+                                             "Invalid ID. Please enter a valid ID.",
+                                             get_password_ids());
+        auto password_it = _pass_without_categories.find(password_id);
+        if (password_it != _pass_without_categories.end()) {
+            _pass_without_categories.erase(password_it);
+            fmt::print("[+] Password deleted successfully\n");
+        } else fmt::print("[-] Password with ID {} not found\n", password_id);
+
+    } else if (delete_option == 2) {
+        category.print();
+        std::size_t category_id = read_input("Enter the ID of the category: ",
+                                             "Invalid ID. Please enter a valid ID.",
+                                             category.get_category_ids());
+        auto category_it = category.categories_map.find(category_id);
+        if (category_it != category.categories_map.end()) {
+            category.categories_map.erase(category_it);
+            fmt::print("[+] Category deleted successfully\n");
+        } else {
+            fmt::print("[-] Category with ID {} not found\n", category_id);
+        }
+    }
+}
+
+auto passwords::get_password_ids() const -> std::vector<std::size_t> {
+    std::vector<std::size_t> password_ids;
+    password_ids.reserve(_pass_without_categories.size());
+    for (const auto &password : _pass_without_categories) {
+        password_ids.push_back(password.first);
+    }
+    return password_ids;
+}
+
+auto passwords::print() -> bool {
+    bool has_passwords = !_pass_without_categories.empty();
+    if (has_passwords) {
+        for (auto const &pass : _pass_without_categories) {
+            fmt::print("\n[+] ID: {} Name: {}",
+                       pass.second.ID, pass.second.name);
+        }
+    } else fmt::print("\n[-] No Passwords Found\n");
+
+    return has_passwords;
 }
