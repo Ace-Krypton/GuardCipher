@@ -179,7 +179,7 @@ auto passwords::search(const categories &category) -> void {
     }
 
     for (const auto &element : category.categories_map) {
-        for (const auto& password : element.second.passwords) {
+        for (const std::string &password : element.second.passwords) {
             if (password.find(search_param) != std::string::npos) {
                 fmt::print("[Category: '{}', ID: {}] {}\n",
                            element.second.name, element.second.ID, password);

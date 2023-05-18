@@ -7,6 +7,7 @@
 
 #include <regex>
 #include <random>
+#include <range/v3/all.hpp>
 
 #include "../include/categories.hpp"
 
