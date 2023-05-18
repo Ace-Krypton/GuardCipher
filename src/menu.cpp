@@ -55,6 +55,7 @@ auto menu::handle_option(passwords &password, categories &category,
         case 2: category.remove(); break;
         case 3: category.print(); break;
         case 4: password.search(category); break;
+        case 5: password.sort(category); break;
         case 6: password.add(category); break;
         case 0: flag.store(false); break;
         default: fmt::print("\n[-] Invalid Input, Try Again\n");

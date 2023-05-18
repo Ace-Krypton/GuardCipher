@@ -190,3 +190,50 @@ auto passwords::search(const categories &category) -> void {
 
     if (!found) fmt::print("[-] No Passwords Found\n");
 }
+
+auto passwords::sort(categories &category) -> void {
+    int sort_option = read_input("Sort by:\n[1] Name\n[2] Category\nEnter your choice: ",
+                                 "Invalid input. Please enter a valid option.", {1, 2});
+
+    if (sort_option == 1) {
+        std::vector<std::pair<std::size_t, password>> temp_passwords(
+                std::make_move_iterator(_pass_without_categories.begin()),
+                std::make_move_iterator(_pass_without_categories.end()));
+
+        std::sort(temp_passwords.begin(), temp_passwords.end(),
+                  [](const auto &a,
+                          const auto &b) -> bool {
+                      return a.second.name < b.second.name;
+                  });
+
+        _pass_without_categories = std::map<std::size_t, password>(
+                std::make_move_iterator(temp_passwords.begin()),
+                std::make_move_iterator(temp_passwords.end()));
+    } else if (sort_option == 2) {
+        std::vector<categories::category> sorted_categories;
+        sorted_categories.reserve(category.categories_map.size());
+
+        for (auto &&element : category.categories_map) {
+            sorted_categories.push_back(std::move(element.second));
+        }
+        std::sort(sorted_categories.begin(), sorted_categories.end(),
+                  [](const categories::category &a,
+                          const categories::category &b) -> bool {
+                      return a.name < b.name;
+                  });
+
+        std::map<std::size_t, categories::category> sorted_categories_map;
+        std::size_t current_ID = 1;
+        for (auto &&sorted_category : sorted_categories) {
+            sorted_categories_map[current_ID] = std::move(sorted_category);
+            current_ID++;
+        }
+        category.categories_map = std::move(sorted_categories_map);
+
+        for (auto &element : category.categories_map) {
+            std::sort(element.second.passwords.begin(), element.second.passwords.end());
+        }
+    }
+
+    fmt::print("\n[+] Passwords sorted successfully\n");
+}

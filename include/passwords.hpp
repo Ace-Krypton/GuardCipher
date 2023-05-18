@@ -7,7 +7,6 @@
 
 #include <regex>
 #include <random>
-#include <range/v3/all.hpp>
 
 #include "../include/categories.hpp"
 
@@ -19,6 +18,7 @@ public:
     };
 
     auto add(categories &category) -> void;
+    auto sort(categories &category) -> void;
     auto search(const categories &category) -> void;
     static auto generator(int password_length, bool has_upper_case,
                           bool has_lower_case, bool has_special_chars) -> std::string;
