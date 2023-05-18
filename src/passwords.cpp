@@ -160,3 +160,33 @@ auto passwords::generator(int password_length, bool has_upper_case,
 
     return password;
 }
+
+auto passwords::search(const categories &category) -> void {
+    std::string search_param;
+    fmt::print("Enter the Search Parameter: ");
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, search_param);
+
+    bool found = false;
+    fmt::print("\nSearch Results:\n");
+
+    for (const auto &password : _pass_without_categories) {
+        if (password.second.name.find(search_param) != std::string::npos) {
+            fmt::print("[ID: {}] {}\n",
+                       password.second.ID, password.second.name);
+            found = true;
+        }
+    }
+
+    for (const auto &element : category.categories_map) {
+        for (const auto& password : element.second.passwords) {
+            if (password.find(search_param) != std::string::npos) {
+                fmt::print("[Category: '{}', ID: {}] {}\n",
+                           element.second.name, element.second.ID, password);
+                found = true;
+            }
+        }
+    }
+
+    if (!found) fmt::print("[-] No Passwords Found\n");
+}

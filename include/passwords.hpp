@@ -18,6 +18,7 @@ public:
     };
 
     auto add(categories &category) -> void;
+    auto search(const categories &category) -> void;
     static auto generator(int password_length, bool has_upper_case,
                           bool has_lower_case, bool has_special_chars) -> std::string;
     static auto is_secure(const std::string &password) -> bool;

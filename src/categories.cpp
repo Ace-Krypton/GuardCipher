@@ -86,8 +86,8 @@ auto categories::remove() -> void {
         std::cin >> confirmation;
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
             categories_map.erase(category_selected->ID);
-            fmt::print("[+] Category Deleted Successfully\n");
-        } else fmt::print("[-] Canceled\n");
+            fmt::print("\n[+] Category Deleted Successfully\n");
+        } else fmt::print("\n[-] Canceled\n");
 
-    } else fmt::print("[-] Category Not Found\n");
+    } else fmt::print("\n[-] Category Not Found\n");
 }
