@@ -362,18 +362,17 @@ auto passwords::edit(categories &category) -> void {
 
             fmt::print("\n[+] Editing Password ID: {}\n", password_id);
             std::string new_password;
-            std::cout << "Enter the new password: ";
+            std::cout << "Enter the New Password: ";
             std::cin >> new_password;
 
             if (is_secure(new_password)) {
                 password.name = new_password;
-                fmt::print("[+] Password edited successfully\n");
-            } else {
-                fmt::print("[-] New password is not secure. Please try again.\n");
-            }
-        } else {
-            fmt::print("[-] Password with ID {} not found\n", password_id);
-        }
+                fmt::print("[+] Password Edited Successfully\n");
+
+            } else fmt::print("[-] New Password is Not Secure. Please Try Again.\n");
+
+        } else fmt::print("[-] Password with ID {} Not Found\n", password_id);
+
     } else if (edit_option == 2) {
         if (!category.is_printable()) return;
 
@@ -405,14 +404,14 @@ auto passwords::edit(categories &category) -> void {
 
                 fmt::print("\n[+] Editing Password ID: {}\n", password_id);
                 std::string new_password;
-                std::cout << "Enter the new password: ";
+                std::cout << "Enter the New Password: ";
                 std::cin >> new_password;
 
                 if (is_secure(new_password)) {
                     password = new_password;
-                    fmt::print("[+] Password edited successfully\n");
+                    fmt::print("[+] Password Edited Successfully\n");
 
-                } else fmt::print("[-] New password is not secure. Please try again.\n");
+                } else fmt::print("[-] New Password is Not Secure. Please Try Again.\n");
 
             } else fmt::print("[-] Invalid Password ID\n");
 
