@@ -18,7 +18,8 @@ public:
     struct category {
         std::size_t ID { };
         std::string name;
-        std::vector<std::string> passwords;
+        std::size_t _pass_id = 1;
+        std::map<std::size_t, std::string> passwords;
     };
 
     auto add() -> void;

@@ -3,4 +3,9 @@
  * See LICENSE file for license details
  */
 
-#include "../include/encrypt.hpp"
+#pragma once
+
+class cryptor {
+    auto encrypt() -> void;
+    auto decrypt() -> void;
+};

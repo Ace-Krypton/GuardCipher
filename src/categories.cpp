@@ -47,16 +47,14 @@ auto categories::get(const std::variant<std::size_t,
 }
 
 auto categories::is_printable() -> bool {
-    std::size_t password_id = 1;
     bool has_categories = !categories_map.empty();
     if (has_categories) {
         fmt::print("\n----------- Categories -----------\n");
         for (const auto &category : categories_map) {
             fmt::print("\n[+] ID: {} Name: {}\n Passwords:\n",
                        category.second.ID, category.second.name);
-            for (const std::string &password : category.second.passwords) {
-                fmt::print("ID: {} {}\n", password_id, password);
-                ++password_id;
+            for (const auto &password : category.second.passwords) {
+                fmt::print("ID: {}, {}\n", password.first, password.second);
             }
         }
     } else fmt::print("\n[-] No Category Found\n");

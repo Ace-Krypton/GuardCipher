@@ -12,5 +12,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(fmt)
 
 add_executable(GuardCipher src/main.cpp src/categories.cpp include/categories.hpp src/menu.cpp include/menu.hpp
-        src/passwords.cpp include/passwords.hpp src/encrypt.cpp include/encrypt.hpp)
+        src/passwords.cpp include/passwords.hpp src/cryptor.cpp include/cryptor.hpp)
 target_link_libraries(GuardCipher fmt::fmt)

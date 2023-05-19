@@ -113,7 +113,7 @@ auto passwords::add(categories &category) -> void {
         std::cin >> confirmation;
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
             auto category_it = category.categories_map.find(selected_category->ID);
-            category_it->second.passwords.emplace_back(password_input);
+            category_it->second.passwords[category_it->second._pass_id++] = password_input;
             fmt::print("\n[+] Password Added Successfully\n");
         } else fmt::print("\n[-] Canceled\n");
 
@@ -191,10 +191,10 @@ auto passwords::search(const categories &category) -> void {
     }
 
     for (const auto &element : category.categories_map) {
-        for (const std::string &password : element.second.passwords) {
-            if (password.find(search_param) != std::string::npos) {
+        for (const auto &password : element.second.passwords) {
+            if (password.second.find(search_param) != std::string::npos) {
                 fmt::print("[Category: '{}', ID: {}] {}\n",
-                           element.second.name, element.second.ID, password);
+                           element.second.name, element.second.ID, password.second);
                 found = true;
             }
         }
@@ -203,11 +203,11 @@ auto passwords::search(const categories &category) -> void {
     if (!found) fmt::print("\n[-] No Passwords Found\n");
 }
 
-auto passwords::sort(categories &category) -> void {
+auto passwords::sort(categories& category) -> void {
     int sort_option = read_input<int>("Sort Password From:\n[1] Password List\n"
-                                 "[2] Category\nEnter your choice: ",
-                                 "Invalid input. Please enter a valid option.",
-                                 {1, 2});
+                                      "[2] Category\nEnter your choice: ",
+                                      "Invalid input. Please enter a valid option.",
+                                      {1, 2});
 
     if (sort_option == 1) {
         std::vector<std::pair<std::size_t, password>> temp_passwords(
@@ -217,7 +217,7 @@ auto passwords::sort(categories &category) -> void {
         std::sort(temp_passwords.begin(),
                   temp_passwords.end(),
                   [](const auto &a,
-                          const auto &b) -> bool {
+                     const auto &b) -> bool {
                       return a.second.name < b.second.name;
                   });
 
@@ -228,27 +228,40 @@ auto passwords::sort(categories &category) -> void {
         std::vector<categories::category> sorted_categories_vec;
         sorted_categories_vec.reserve(category.categories_map.size());
 
-        for (auto &&element : category.categories_map) {
+        for (auto&& element : category.categories_map) {
             sorted_categories_vec.push_back(std::move(element.second));
         }
+
         std::sort(sorted_categories_vec.begin(),
                   sorted_categories_vec.end(),
-                  [](const categories::category &a,
-                          const categories::category &b) -> bool {
+                  [](const categories::category& a, const categories::category& b) -> bool {
                       return a.name < b.name;
                   });
 
         std::map<std::size_t, categories::category> sorted_categories_map;
         std::size_t current_ID = 1;
-        for (auto &&sorted_category : sorted_categories_vec) {
+
+        for (auto&& sorted_category : sorted_categories_vec) {
             sorted_categories_map[current_ID] = std::move(sorted_category);
             current_ID++;
         }
+
         category.categories_map = std::move(sorted_categories_map);
 
-        for (auto &element : category.categories_map) {
-            std::sort(element.second.passwords.begin(),
-                      element.second.passwords.end());
+        for (auto& element : category.categories_map) {
+            std::vector<std::pair<std::size_t, std::string>> temp_passwords(
+                    element.second.passwords.begin(),
+                    element.second.passwords.end());
+
+            std::sort(temp_passwords.begin(),
+                      temp_passwords.end(),
+                      [](const auto& a, const auto& b) -> bool {
+                          return a.second < b.second;
+                      });
+
+            element.second.passwords = std::map<std::size_t, std::string>(
+                    temp_passwords.begin(),
+                    temp_passwords.end());
         }
     }
 
@@ -304,12 +317,12 @@ auto passwords::remove(categories &category) -> void {
             auto password_id =
                     read_input<std::size_t>("Enter the ID of the password to delete: ",
                                             "Invalid ID. Please enter a valid ID.",
-                                            {1, selected_category->passwords.size()});
+                                            {1, selected_category->_pass_id});
 
             if (password_id >= 1 && password_id <= selected_category->passwords.size()) {
                 auto category_it = category.categories_map.find(selected_category->ID);
                 category_it->second.passwords.erase(
-                        selected_category->passwords.begin() + (static_cast<long>(password_id) - 1));
+                        selected_category->passwords.find(password_id));
                 fmt::print("\n[+] Password Deleted Successfully\n");
 
             } else fmt::print("\n[-] Invalid Password ID\n");
