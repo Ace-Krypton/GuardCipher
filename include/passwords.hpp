@@ -19,6 +19,7 @@ public:
 
     auto is_printable() -> bool;
     auto add(categories &category) -> void;
+    auto edit(categories &category) -> void;
     auto sort(categories &category) -> void;
     auto remove(categories &category) -> void;
     auto search(const categories &category) -> void;

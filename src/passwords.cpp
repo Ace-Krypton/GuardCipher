@@ -260,12 +260,12 @@ auto passwords::remove(categories &category) -> void {
 
     if (delete_option == 1) {
         if (!is_printable()) {
-            fmt::print("\n[-]; No Passwords Found Inside of Password List");
+            fmt::print("\n[-] No Passwords Found Inside of Password List");
             return;
         }
 
         auto password_id =
-                read_input<std::size_t>("Enter the ID of the password to delete: ",
+                read_input<std::size_t>("\nEnter the ID of the password to delete: ",
                                         "Invalid ID. Please enter a valid ID.",
                                         get_password_ids());
 
@@ -273,7 +273,7 @@ auto passwords::remove(categories &category) -> void {
 
         if (password_it != _pass_without_categories.end()) {
             _pass_without_categories.erase(password_it);
-            fmt::print("[+] Password deleted successfully\n");
+            fmt::print("\n[+] Password deleted successfully\n");
         } else fmt::print("[-] Password with ID {} not found\n", password_id);
 
     } else if (delete_option == 2) {
@@ -336,4 +336,86 @@ auto passwords::is_printable() -> bool {
     } else fmt::print("\n[-] No Passwords Found\n");
 
     return has_passwords;
+}
+
+auto passwords::edit(categories &category) -> void {
+    int edit_option = read_input<int>("Edit Password From:\n[1] Password List\n"
+                                      "[2] Category\nEnter your choice: ",
+                                      "Invalid input. Please enter a valid option.",
+                                      {1, 2});
+
+    if (edit_option == 1) {
+        if (!is_printable()) {
+            fmt::print("\n[-] No Passwords Found Inside the Password List");
+            return;
+        }
+
+        auto password_id =
+                read_input<std::size_t>("\nEnter the ID of the password to edit: ",
+                                        "Invalid ID. Please enter a valid ID.",
+                                        get_password_ids());
+
+        auto password_it = _pass_without_categories.find(password_id);
+
+        if (password_it != _pass_without_categories.end()) {
+            auto &password = password_it->second;
+
+            fmt::print("\n[+] Editing Password ID: {}\n", password_id);
+            std::string new_password;
+            std::cout << "Enter the new password: ";
+            std::cin >> new_password;
+
+            if (is_secure(new_password)) {
+                password.name = new_password;
+                fmt::print("[+] Password edited successfully\n");
+            } else {
+                fmt::print("[-] New password is not secure. Please try again.\n");
+            }
+        } else {
+            fmt::print("[-] Password with ID {} not found\n", password_id);
+        }
+    } else if (edit_option == 2) {
+        if (!category.is_printable()) return;
+
+        std::variant<std::size_t, std::string> identifier;
+
+        std::string input;
+        fmt::print("Enter the Category: ");
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::getline(std::cin, input);
+
+        try {
+            std::size_t id = std::stoull(input);
+            identifier = id;
+        } catch (...) {
+            identifier = input;
+        }
+
+        std::optional<categories::category> selected_category = category.get(identifier);
+        if (selected_category.has_value()) {
+            auto password_id =
+                    read_input<std::size_t>("Enter the ID of the password to edit: ",
+                                            "Invalid ID. Please enter a valid ID.",
+                                            {1, selected_category->passwords.size()});
+
+            if (password_id >= 1 && password_id <= selected_category->passwords.size()) {
+                auto category_it = category.categories_map.find(selected_category->ID);
+                std::vector<std::string> &passwords = category_it->second.passwords;
+                std::string &password = passwords[password_id - 1];
+
+                fmt::print("\n[+] Editing Password ID: {}\n", password_id);
+                std::string new_password;
+                std::cout << "Enter the new password: ";
+                std::cin >> new_password;
+
+                if (is_secure(new_password)) {
+                    password = new_password;
+                    fmt::print("[+] Password edited successfully\n");
+
+                } else fmt::print("[-] New password is not secure. Please try again.\n");
+
+            } else fmt::print("[-] Invalid Password ID\n");
+
+        } else fmt::print("[-] Category Not Found\n");
+    }
 }
