@@ -14,10 +14,13 @@ auto passwords::read_input(const std::string &prompt, const std::string &error_m
         if (std::cin >> value) {
             if (std::find(valid_values.begin(),
                           valid_values.end(), value) != valid_values.end()) { return value; }
-        }
-        fmt::print("[-] {}\n", error_message);
+        } else {
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        } fmt::print("\n[-] {}\n", error_message);
     }
 }
+
 
 auto passwords::add(categories &category) -> void {
     std::string password_input;
@@ -60,7 +63,7 @@ auto passwords::add(categories &category) -> void {
             fmt::print("\nEnter the Password: ");
             std::cin >> password;
             if (!is_secure(password)) {
-                fmt::print("[-] Password is not Secure, Try Again\n");
+                fmt::print("\n[-] Password is not Secure, Try Again\n");
                 add_recursive(password);
             }
         };
@@ -79,7 +82,7 @@ auto passwords::add(categories &category) -> void {
 
     if (!category.is_printable() || (confirmation_adding.size() == 1
                                      && std::toupper(confirmation_adding[0]) == 'N')) {
-        fmt::print("[+] Adding to Password List");
+        fmt::print("\n[+] Adding to Password List");
         struct password new_password;
         new_password.name = password_input;
         new_password.ID = _current_ID++;
@@ -112,9 +115,9 @@ auto passwords::add(categories &category) -> void {
             auto category_it = category.categories_map.find(selected_category->ID);
             category_it->second.passwords.emplace_back(password_input);
             fmt::print("\n[+] Password Added Successfully\n");
-        } else fmt::print("[-] Canceled\n");
+        } else fmt::print("\n[-] Canceled\n");
 
-    } else fmt::print("[-] Category Not Found\n");
+    } else fmt::print("\n[-] Category Not Found\n");
 }
 
 auto passwords::is_secure(const std::string &password) -> bool {
@@ -197,7 +200,7 @@ auto passwords::search(const categories &category) -> void {
         }
     }
 
-    if (!found) fmt::print("[-] No Passwords Found\n");
+    if (!found) fmt::print("\n[-] No Passwords Found\n");
 }
 
 auto passwords::sort(categories &category) -> void {
@@ -274,7 +277,7 @@ auto passwords::remove(categories &category) -> void {
         if (password_it != _pass_without_categories.end()) {
             _pass_without_categories.erase(password_it);
             fmt::print("\n[+] Password deleted successfully\n");
-        } else fmt::print("[-] Password with ID {} not found\n", password_id);
+        } else fmt::print("\n[-] Password with ID {} not found\n", password_id);
 
     } else if (delete_option == 2) {
         if (!category.is_printable()) {
@@ -307,10 +310,10 @@ auto passwords::remove(categories &category) -> void {
                 auto category_it = category.categories_map.find(selected_category->ID);
                 category_it->second.passwords.erase(
                         selected_category->passwords.begin() + (static_cast<long>(password_id) - 1));
-                fmt::print("[+] Password Deleted Successfully\n");
+                fmt::print("\n[+] Password Deleted Successfully\n");
 
-            } else fmt::print("[-] Invalid Password ID\n");
-        } else fmt::print("[-] Category Not Found\n");
+            } else fmt::print("\n[-] Invalid Password ID\n");
+        } else fmt::print("\n[-] Category Not Found\n");
     }
 }
 
@@ -367,11 +370,11 @@ auto passwords::edit(categories &category) -> void {
 
             if (is_secure(new_password)) {
                 password.name = new_password;
-                fmt::print("[+] Password Edited Successfully\n");
+                fmt::print("\n[+] Password Edited Successfully\n");
 
-            } else fmt::print("[-] New Password is Not Secure. Please Try Again.\n");
+            } else fmt::print("\n[-] New Password is Not Secure. Please Try Again.\n");
 
-        } else fmt::print("[-] Password with ID {} Not Found\n", password_id);
+        } else fmt::print("\n[-] Password with ID {} Not Found\n", password_id);
 
     } else if (edit_option == 2) {
         if (!category.is_printable()) return;
@@ -409,12 +412,12 @@ auto passwords::edit(categories &category) -> void {
 
                 if (is_secure(new_password)) {
                     password = new_password;
-                    fmt::print("[+] Password Edited Successfully\n");
+                    fmt::print("\n[+] Password Edited Successfully\n");
 
-                } else fmt::print("[-] New Password is Not Secure. Please Try Again.\n");
+                } else fmt::print("\n[-] New Password is Not Secure. Please Try Again.\n");
 
-            } else fmt::print("[-] Invalid Password ID\n");
+            } else fmt::print("\n[-] Invalid Password ID\n");
 
-        } else fmt::print("[-] Category Not Found\n");
+        } else fmt::print("\n[-] Category Not Found\n");
     }
 }
