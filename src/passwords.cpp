@@ -59,7 +59,8 @@ auto passwords::add(categories &category) -> void {
             if (password_input != "error occured") break;
         }
     } else if (choice == 2) {
-        std::function<void(std::string&)> add_recursive = [&](std::string &password) -> void {
+        std::function<void(std::string&)> add_recursive =
+                [&](std::string &password) -> void {
             fmt::print("\nEnter the Password: ");
             std::cin >> password;
             if (!is_secure(password)) {
@@ -108,7 +109,7 @@ auto passwords::add(categories &category) -> void {
     std::optional<categories::category> selected_category = category.get(identifier);
     if (selected_category.has_value()) {
         fmt::print("Are You Sure You Want to Add Password to This Category '{}'? (Y/N): ",
-                   selected_category->name);
+                   category.categories_map.find(selected_category->ID)->second.name);
         std::string confirmation;
         std::cin >> confirmation;
         if (confirmation.size() == 1 && std::toupper(confirmation[0]) == 'Y') {
@@ -217,7 +218,7 @@ auto passwords::sort(categories &category) -> void {
         std::sort(temp_passwords.begin(),
                   temp_passwords.end(),
                   [](const auto &a,
-                     const auto &b) -> bool {
+                          const auto &b) -> bool {
                       return a.second.name < b.second.name;
                   });
 
