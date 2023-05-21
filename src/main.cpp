@@ -6,9 +6,11 @@
 #include "../include/menu.hpp"
 
 auto main() -> int {
+    /// Creating the objects
     passwords password;
     categories category;
 
+    /// Creating the menu items
     std::vector<menu::item> menu {
             {1, "Add Category"},
             {2, "Remove Category"},
@@ -22,6 +24,10 @@ auto main() -> int {
             {0, "Exit"},
     };
 
+    /// Passing the parameters
+    /// @param password
+    /// @param category
+    /// @param menu
     menu::process(password, category, menu);
 
     return 0;
