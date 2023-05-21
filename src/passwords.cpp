@@ -495,7 +495,6 @@ auto passwords::is_printable() -> bool {
 
 /**
  * @brief Edit passwords either from the password list or from a specific category.
- *
  * @param category The categories object used to access and modify categories and passwords.
  */
 auto passwords::edit(categories &category) -> void {
