@@ -24,7 +24,7 @@ auto main() -> int {
             {0, "Exit"},
     };
 
-    /// Passing the parameters
+    /// Passing the parameters to the process function
     /// @param password
     /// @param category
     /// @param menu
