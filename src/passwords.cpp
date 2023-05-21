@@ -577,7 +577,8 @@ auto passwords::edit(categories &category) -> void {
                         category_it->second.passwords;
                 std::string &password = passwords[password_id];
 
-                fmt::print("\n[+] Editing Password ID: {}\n", password_id);
+                fmt::print("\n[+] Editing Password\nID: {} Password: {}\n",
+                           password_id, category_it->second.passwords.find(password_id)->second);
                 std::string new_password;
                 std::cout << "Enter the New Password: ";
                 std::cin >> new_password;

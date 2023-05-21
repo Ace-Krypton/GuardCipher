@@ -87,6 +87,8 @@ auto menu::find_item(const std::vector<item> &menu, std::size_t id) -> std::opti
         /// And return the matching item
         if (item.id == id) return item;
     }
+
+    return std::nullopt;
 }
 
 /**
