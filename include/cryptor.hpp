@@ -5,7 +5,11 @@
 
 #pragma once
 
+#include <string>
+
 class cryptor {
-    auto encrypt() -> void;
-    auto decrypt() -> void;
+    auto encrypt(const std::string &plaintext,
+                 const std::string &key) -> std::string;
+    auto decrypt(const std::string &ciphertext,
+                 const std::string &key) -> std::string;
 };
