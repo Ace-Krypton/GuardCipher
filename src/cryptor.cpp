@@ -36,3 +36,28 @@ auto cryptor::decrypt(const std::string &ciphertext,
 
     return plain_text;
 }
+
+auto cryptor::encrypt_map(std::map<std::size_t, std::string> &passwords,
+                          const std::string &encryption_key) -> void {
+    for (auto& [key, value] : passwords) {
+        value = encrypt(value, encryption_key);
+    }
+}
+
+auto cryptor::initialize_encrypt(categories &category) -> void {
+    if (!category.is_printable()) return;
+    fmt::print("Enter the secret key: ");
+
+    std::string key;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, key);
+
+    _secret_key = std::move(key);
+
+    for (auto& [category_ID, _category] : category.categories_map) {
+        encrypt_map(_category.passwords, _secret_key);
+    }
+
+    fmt::print("[+] All data encrypted successfully");
+    category.is_printable();
+}

@@ -9,6 +9,7 @@
 #include <vector>
 #include <functional>
 
+#include "cryptor.hpp"
 #include "passwords.hpp"
 #include "categories.hpp"
 

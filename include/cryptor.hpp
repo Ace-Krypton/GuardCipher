@@ -5,11 +5,18 @@
 
 #pragma once
 
-#include <string>
+#include "categories.hpp"
 
 class cryptor {
-    auto encrypt(const std::string &plaintext,
+public:
+    static auto decrypt(const std::string &ciphertext,
                  const std::string &key) -> std::string;
-    auto decrypt(const std::string &ciphertext,
+    static auto encrypt(const std::string &plaintext,
                  const std::string &key) -> std::string;
+    static auto initialize_encrypt(categories &category) -> void;
+    static auto encrypt_map(std::map<std::size_t, std::string> &passwords,
+                            const std::string &encryption_key) -> void;
+
+private:
+    inline static std::string _secret_key;
 };
