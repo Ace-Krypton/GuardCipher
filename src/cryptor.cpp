@@ -4,7 +4,6 @@
  */
 
 #include <fstream>
-#include <sstream>
 #include "../include/cryptor.hpp"
 
 auto cryptor::encrypt(const std::string &plaintext,
@@ -51,7 +50,9 @@ auto cryptor::initialize_encrypt(categories &category) -> void {
     fmt::print("Enter the secret key: ");
 
     std::string key;
-    std::cin >> key;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, key);
+
     _secret_key = std::move(key);
 
     for (auto& [category_ID, _category] : category.categories_map) {
@@ -62,42 +63,30 @@ auto cryptor::initialize_encrypt(categories &category) -> void {
     fmt::print("[+] All Data Encrypted Successfully\n");
 }
 
-auto cryptor::initialize_decrypt(categories& category) -> void {
-    std::string encryptedDataFilename = "encrypted_map.txt";
+auto cryptor::write(const categories &category,
+                    const std::map<std::size_t, std::string> &data,
+                    const std::string &filename) -> bool {
+    std::ofstream file(filename);
 
-    // Read the encrypted data from the file
-    std::map<std::size_t, std::string> encryptedData = read_encrypted_data(encryptedDataFilename);
-
-    if (encryptedData.empty()) {
-        fmt::print("[-] No encrypted data found.\n");
-        return;
+    if (!file) {
+        fmt::print("[-] Failed to Open the File '{}'", filename);
+        return false;
     }
 
-    fmt::print("Enter the decryption _key: ");
-    std::string _key;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::getline(std::cin, _key);
-
-    _secret_key = std::move(_key);
-
-    try {
-        // Decrypt the passwords
-        decrypt_map(encryptedData, _secret_key);
-
-        // Update the decrypted passwords in the category map
-        for (auto& [category_ID, _category] : category.categories_map) {
-            for (auto& [key, value] : _category.passwords) {
-                if (encryptedData.count(key) > 0) {
-                    std::cout << "came here";
-                    value = encryptedData[key];
-                }
-            }
+    file << "\n----------- Categories -----------\n";
+    for (const auto &element : category.categories_map) {
+        file << "[+] ID: " << element.second.ID <<
+             " Name: " << element.second.name << '\n' << " Passwords:\n";
+        for (const auto& [key, value] : data) {
+            file << "ID: " << key << " Pass: " << value << '\n';
         }
-
-        fmt::print("[+] All Data Decrypted Successfully\n");
-    } catch (const std::exception& e) {
-        fmt::print("[-] Decryption error: {}\n", e.what());
+        file << '\n';
     }
+
+    file.close();
+
+    fmt::print("[+] Map data written to file '{}'\n", filename);
+    return true;
 }
 
 auto cryptor::read_encrypted_data(const std::string& filename) -> std::map<std::size_t, std::string> {
@@ -137,29 +126,37 @@ auto cryptor::decrypt_map(std::map<std::size_t, std::string>& passwords,
     }
 }
 
-auto cryptor::write(const categories& category, const std::map<std::size_t,
-                    std::string>& data, const std::string& filename) -> bool {
-    std::ofstream file(filename);
+auto cryptor::initialize_decrypt(categories& category) -> void {
+    std::string encryptedDataFilename = "encrypted_map.txt";
 
-    if (!file) {
-        fmt::print("[-] Failed to open the file '{}'\n", filename);
-        return false;
+    std::map<std::size_t, std::string> encryptedData =
+            read_encrypted_data(encryptedDataFilename);
+
+    if (encryptedData.empty()) {
+        fmt::print("[-] No encrypted data found.\n");
+        return;
     }
 
-    file << "\n----------- Categories -----------\n";
+    fmt::print("Enter the decryption key: ");
+    std::string decryption_key;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    std::getline(std::cin, decryption_key);
 
-    for (const auto& element : category.categories_map) {
-        file << "[+] ID: " << element.second.ID << " Name: " << element.second.name << '\n';
-        file << "Passwords:\n";
+    _secret_key = std::move(decryption_key);
 
-        for (const auto& [key, value] : data) {
-            file << "ID: " << key << " Pass: " << value << '\n';
+    try {
+        decrypt_map(encryptedData, _secret_key);
+
+        for (auto& [category_ID, _category] : category.categories_map) {
+            for (auto& [key, value] : _category.passwords) {
+                if (encryptedData.count(key) > 0) {
+                    value = encryptedData[key];
+                }
+            }
         }
-        file << '\n';
+
+        fmt::print("[+] All Data Decrypted Successfully\n");
+    } catch (const std::exception& e) {
+        fmt::print("[-] Decryption error: {}\n", e.what());
     }
-
-    file.close();
-
-    fmt::print("[+] Map data written to file '{}'\n", filename);
-    return true;
 }
