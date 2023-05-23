@@ -53,13 +53,13 @@ auto passwords::add(categories &category) -> void {
     if (choice == 1) {
         /// Automatic password generation method
         while (true) {
-            /// Generate a vector of valid lengths from 1 to 50
-            std::vector<int> valid_lengths(50);
-            std::iota(valid_lengths.begin(), valid_lengths.end(), 1);
+            /// Generate a vector of valid lengths from 8 to 50
+            std::vector<int> valid_lengths(43);
+            std::iota(valid_lengths.begin(), valid_lengths.end(), 8);
 
             /// Read the password length from the user
             int password_length =
-                    read_input<int>("\nPassword Length (Max Length 50): ",
+                    read_input<int>("\nPassword Length (Max Length 50, Min Length 8): ",
                                     "Invalid Range. Please Enter Correct Length.",
                                     valid_lengths);
 

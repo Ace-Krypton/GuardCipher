@@ -3,6 +3,7 @@
  * See LICENSE file for license details
  */
 
+#include <fstream>
 #include "../include/cryptor.hpp"
 
 auto cryptor::encrypt(const std::string &plaintext,
@@ -56,8 +57,34 @@ auto cryptor::initialize_encrypt(categories &category) -> void {
 
     for (auto& [category_ID, _category] : category.categories_map) {
         encrypt_map(_category.passwords, _secret_key);
+        write(category, _category.passwords, "encrypted_map.txt");
     }
 
-    fmt::print("[+] All data encrypted successfully");
-    category.is_printable();
+    fmt::print("[+] All Data Encrypted Successfully\n");
+}
+
+auto cryptor::write(const categories &category,
+                    const std::map<std::size_t, std::string> &data,
+                    const std::string &filename) -> bool {
+    std::ofstream file(filename);
+
+    if (!file) {
+        fmt::print("[-] Failed to Open the File '{}'", filename);
+        return false;
+    }
+
+    file << "\n----------- Categories -----------\n";
+    for (const auto &element : category.categories_map) {
+        file << "[+] ID: " << element.second.ID <<
+             " Name: " << element.second.name << '\n' << " Passwords:\n";
+        for (const auto& [key, value] : data) {
+            file << "ID: " << key << " Pass: " << value << '\n';
+        }
+        file << '\n';
+    }
+
+    file.close();
+
+    fmt::print("[+] Map data written to file '{}'\n", filename);
+    return true;
 }

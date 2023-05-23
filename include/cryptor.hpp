@@ -16,6 +16,9 @@ public:
     static auto initialize_encrypt(categories &category) -> void;
     static auto encrypt_map(std::map<std::size_t, std::string> &passwords,
                             const std::string &encryption_key) -> void;
+    static auto write(const categories &category,
+                      const std::map<std::size_t, std::string> &data,
+                      const std::string &filename) -> bool;
 
 private:
     inline static std::string _secret_key;
