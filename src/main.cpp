@@ -21,6 +21,7 @@ auto main() -> int {
             {7, "Edit Password"},
             {8, "Remove Password"},
             {9, "Write Changes To File"},
+            {10, "Decryption Test"},
             {0, "Exit"},
     };
 

@@ -19,6 +19,10 @@ public:
     static auto write(const categories &category,
                       const std::map<std::size_t, std::string> &data,
                       const std::string &filename) -> bool;
+    static auto read_encrypted_data(const std::string& filename) -> std::map<std::size_t, std::string>;
+    static auto decrypt_map(std::map<std::size_t, std::string>& encrypted_data,
+                                     const std::string& decryption_key) -> void;
+    static auto initialize_decrypt(categories& category) -> void;
 
 private:
     inline static std::string _secret_key;
