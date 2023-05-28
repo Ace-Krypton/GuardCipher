@@ -9,8 +9,6 @@
 
 class cryptor {
 public:
-    static auto decrypt(const std::string &ciphertext,
-                 const std::string &key) -> std::string;
     static auto encrypt(const std::string &plaintext,
                  const std::string &key) -> std::string;
     static auto initialize_encrypt(categories &category) -> void;
@@ -19,10 +17,9 @@ public:
     static auto write(const categories &category,
                       const std::map<std::size_t, std::string> &data,
                       const std::string &filename) -> bool;
-    static auto read_encrypted_data(const std::string& filename) -> std::map<std::size_t, std::string>;
-    static auto decrypt_map(std::map<std::size_t, std::string>& encrypted_data,
-                                     const std::string& decryption_key) -> void;
-    static auto initialize_decrypt(categories& category) -> void;
+
+    [[maybe_unused]] static auto decrypt(const std::string &ciphertext,
+                                         const std::string &key) -> std::string;
 
 private:
     inline static std::string _secret_key;

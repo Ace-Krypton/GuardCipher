@@ -116,7 +116,6 @@ auto menu::handle_option(passwords &password, categories &category,
         case 7: password.edit(category); break;
         case 8: password.remove(category); break;
         case 9: cryptor::initialize_encrypt(category); break;
-        case 10: cryptor::initialize_decrypt(category); break;
         case 0: flag.store(false); break;
         default: fmt::print("\n[-] Invalid Input, Try Again\n");
     }

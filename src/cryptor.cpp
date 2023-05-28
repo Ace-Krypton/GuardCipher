@@ -6,14 +6,23 @@
 #include <fstream>
 #include "../include/cryptor.hpp"
 
+/**
+ * @brief Encrypts the plaintext using the provided key.
+ *
+ * @param plaintext The plaintext to encrypt.
+ * @param key       The encryption key.
+ * @return The encrypted ciphertext.
+ */
 auto cryptor::encrypt(const std::string &plaintext,
                       const std::string &key) -> std::string {
     std::size_t key_index = 0;
     std::string cipher_text = plaintext;
 
     for (char &i : cipher_text) {
+        /// Add the key value to the plaintext character and take modulo 256
         i = static_cast<char>((static_cast<unsigned char>(i)
                                + static_cast<unsigned char>(key[key_index])) % 256);
+        /// XOR the result with the lower 8 bits of the key value
         i = static_cast<char>(static_cast<unsigned char>(i)
                               ^ (static_cast<unsigned char>(key[key_index]) & 0xFF));
         key_index = (key_index + 1) % key.length();
@@ -22,14 +31,23 @@ auto cryptor::encrypt(const std::string &plaintext,
     return cipher_text;
 }
 
-auto cryptor::decrypt(const std::string &ciphertext,
+/**
+ * @brief Decrypts the ciphertext using the provided key.
+ *
+ * @param ciphertext The ciphertext to decrypt.
+ * @param key        The encryption key.
+ * @return The decrypted plaintext.
+ */
+[[maybe_unused]] auto cryptor::decrypt(const std::string &ciphertext,
                       const std::string &key) -> std::string {
     std::size_t key_index = 0;
     std::string plain_text = ciphertext;
 
     for (char &i : plain_text) {
+        /// XOR the ciphertext character with the lower 8 bits of the key value
         i = static_cast<char>(static_cast<unsigned char>(i)
                               ^ (static_cast<unsigned char>(key[key_index]) & 0xFF));
+        /// Subtract the key value from the result and add 256, then take modulo 256
         i = static_cast<char>((static_cast<unsigned char>(i)
                                - static_cast<unsigned char>(key[key_index]) + 256) % 256);
         key_index = (key_index + 1) % key.length();
@@ -38,6 +56,12 @@ auto cryptor::decrypt(const std::string &ciphertext,
     return plain_text;
 }
 
+/**
+ * @brief Encrypts the passwords in a map using the provided encryption key.
+ *
+ * @param passwords        The map of passwords to encrypt.
+ * @param encryption_key   The encryption key.
+ */
 auto cryptor::encrypt_map(std::map<std::size_t, std::string> &passwords,
                           const std::string &encryption_key) -> void {
     for (auto& [key, value] : passwords) {
@@ -45,6 +69,12 @@ auto cryptor::encrypt_map(std::map<std::size_t, std::string> &passwords,
     }
 }
 
+/**
+ * @brief Initializes encryption for a given category.
+ *        Encrypts the passwords in the category map and writes the encrypted data to a file.
+ *
+ * @param category The category to initialize encryption for.
+ */
 auto cryptor::initialize_encrypt(categories &category) -> void {
     if (!category.is_printable()) return;
     fmt::print("Enter the secret key: ");
@@ -63,6 +93,14 @@ auto cryptor::initialize_encrypt(categories &category) -> void {
     fmt::print("[+] All Data Encrypted Successfully\n");
 }
 
+/**
+ * @brief Writes the category and password data to a file.
+ *
+ * @param category The category object.
+ * @param data     The map of password data.
+ * @param filename The name of the file to write to.
+ * @return True if the write operation was successful, false otherwise.
+ */
 auto cryptor::write(const categories &category,
                     const std::map<std::size_t, std::string> &data,
                     const std::string &filename) -> bool {
@@ -87,76 +125,4 @@ auto cryptor::write(const categories &category,
 
     fmt::print("[+] Map data written to file '{}'\n", filename);
     return true;
-}
-
-auto cryptor::read_encrypted_data(const std::string& filename) -> std::map<std::size_t, std::string> {
-    std::ifstream file(filename);
-    std::map<std::size_t, std::string> encryptedData;
-
-    if (!file) {
-        fmt::print("[-] Failed to open the file '{}'\n", filename);
-        return encryptedData;
-    }
-
-    std::string line;
-
-    while (std::getline(file, line)) {
-        if (line.find("ID: ") != std::string::npos && line.find(" Pass: ") != std::string::npos) {
-            std::string id_str = line.substr(4, line.find(" Pass: ") - 4);
-            std::string pass_str = line.substr(line.find(" Pass: ") + 8);
-
-            try {
-                std::size_t id = std::stoull(id_str);
-                encryptedData[id] = pass_str;
-            } catch (const std::exception& e) {
-                fmt::print("[-] Invalid ID found: {}\n", id_str);
-            }
-        }
-    }
-
-    file.close();
-
-    return encryptedData;
-}
-
-auto cryptor::decrypt_map(std::map<std::size_t, std::string>& passwords,
-                          const std::string& decryption_key) -> void {
-    for (auto& [key, value] : passwords) {
-        value = decrypt(value, decryption_key);
-    }
-}
-
-auto cryptor::initialize_decrypt(categories& category) -> void {
-    std::string encryptedDataFilename = "encrypted_map.txt";
-
-    std::map<std::size_t, std::string> encryptedData =
-            read_encrypted_data(encryptedDataFilename);
-
-    if (encryptedData.empty()) {
-        fmt::print("[-] No encrypted data found.\n");
-        return;
-    }
-
-    fmt::print("Enter the decryption key: ");
-    std::string decryption_key;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    std::getline(std::cin, decryption_key);
-
-    _secret_key = std::move(decryption_key);
-
-    try {
-        decrypt_map(encryptedData, _secret_key);
-
-        for (auto& [category_ID, _category] : category.categories_map) {
-            for (auto& [key, value] : _category.passwords) {
-                if (encryptedData.count(key) > 0) {
-                    value = encryptedData[key];
-                }
-            }
-        }
-
-        fmt::print("[+] All Data Decrypted Successfully\n");
-    } catch (const std::exception& e) {
-        fmt::print("[-] Decryption error: {}\n", e.what());
-    }
 }
